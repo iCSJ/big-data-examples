@@ -11,5 +11,12 @@
 
     <artifactId>big-data-spark</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.11</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+    </dependencies>
 
 </project>
