@@ -11,6 +11,7 @@
         <module>big-data-zookeeper</module>
         <module>big-data-hadoop</module>
         <module>big-data-hive</module>
+        <module>big-data-spark</module>
     </modules>
 
     <packaging>pom</packaging>
