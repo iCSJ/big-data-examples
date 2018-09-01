@@ -13,6 +13,7 @@
         <module>big-data-hive</module>
         <module>big-data-spark</module>
         <module>big-data-kafka</module>
+        <module>big-data-lucene</module>
     </modules>
 
     <packaging>pom</packaging>
