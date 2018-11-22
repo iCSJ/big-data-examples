@@ -1,0 +1,18 @@
+<configuration>
+
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>/export/data/hadoop/name/</value>
+    </property>
+
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>export/data/hadoop/data</value>
+    </property>
+
+    <property>
+        <name>dfs.namenode.secondary.http-address</name>
+        <value>127.0.0.1:50090</value>
+    </property>
+
+</configuration>

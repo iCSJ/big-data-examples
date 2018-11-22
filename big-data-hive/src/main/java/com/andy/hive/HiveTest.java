@@ -1,4 +1,4 @@
-package com.lyon.hive;
+package com.andy.hive;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,8 +7,8 @@ import java.sql.Statement;
 
 /**
  * jdbc连接hive
- * @Author: Mr.lyon
- * @CreateBy: 2018-06-17 18:44
+ * @author leone
+ * @since 2018-06-17 18:44
  **/
 public class HiveTest {
     public static void main(String[] args) throws Exception {
