@@ -1,4 +1,4 @@
-package com.lyon.spark.wc
+package com.com.andy.spark.wc
 
 import org.apache.spark.{SparkConf, SparkContext}
 

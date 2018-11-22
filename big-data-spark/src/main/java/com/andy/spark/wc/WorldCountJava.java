@@ -1,4 +1,4 @@
-package com.lyon.spark.wc;
+package com.andy.spark.wc;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
@@ -14,8 +14,8 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * @Author: Mr.lyon
- * @CreateBy: 2018-06-10 20:37
+ * @author leone
+ * @since 2018-06-10 20:37
  **/
 public class WorldCountJava {
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package com.lyon.zookeeper;
+package com.andy.zookeeper;
 
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * @Author: Mr.lyon
- * @CreateBy: 2018-06-16 20:02
+ * @author leone
+ * @since 2018-06-16
  **/
-public class ZKClient {
+public class ZkClient {
 
     private static CountDownLatch countDownLatch=new CountDownLatch(1);
 
@@ -36,16 +36,16 @@ public class ZKClient {
         countDownLatch.await();
         try {
             //创建持久化节点
-            zooKeeper.create("/andy","你好".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+            zooKeeper.create("/com.andy","你好".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             //获取节点数据
-            byte[] data = zooKeeper.getData("/andy", false, null);
+            byte[] data = zooKeeper.getData("/com.andy", false, null);
             System.out.println(new String(data));
             //修改节点数据
-            zooKeeper.setData("/andy","james".getBytes(),0);
+            zooKeeper.setData("/com.andy","james".getBytes(),0);
             //删除节点数据
-            zooKeeper.delete("/andy",-1);
+            zooKeeper.delete("/com.andy",-1);
             //创建临时节点 异步创建
-            zooKeeper.create("/lyon", "tmp".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL, new AsyncCallback.StringCallback() {
+            zooKeeper.create("/com.andy", "tmp".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL, new AsyncCallback.StringCallback() {
                 public void processResult(int i, String s, Object o, String s1) {
                     System.out.println(o);
                     System.out.println(i);
@@ -54,10 +54,10 @@ public class ZKClient {
                 }
             },"a");
             //获取临时节点数据
-            byte[] jingangs = zooKeeper.getData("/lyon", false, null);
+            byte[] jingangs = zooKeeper.getData("/com.andy", false, null);
             System.out.println(new String(jingangs));
             //验证节点是否存在
-            Stat exists = zooKeeper.exists("/lyon", false);
+            Stat exists = zooKeeper.exists("/com.andy", false);
             System.out.println(exists);
         } catch (Exception e) {
             e.printStackTrace();
