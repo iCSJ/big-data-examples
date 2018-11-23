@@ -1,5 +1,9 @@
 package com.andy.lucen;
 
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.TextField;
+
 /**
  * <p>
  *
@@ -17,6 +21,17 @@ public class Article {
     private String content;
 
     private String url;
+
+    public Article() {
+    }
+
+    public Article(Long id, String author, String title, String content, String url) {
+        this.id = id;
+        this.author = author;
+        this.title = title;
+        this.content = content;
+        this.url = url;
+    }
 
     public Long getId() {
         return id;
@@ -57,4 +72,28 @@ public class Article {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    public Document toDocument() {
+
+        Document document = new Document();
+
+        Field id = new TextField("id", getId().toString(), Field.Store.YES);
+
+        Field author = new TextField("author", getAuthor(), Field.Store.YES);
+
+        Field title = new TextField("title", getTitle(), Field.Store.YES);
+
+        Field content = new TextField("content", getContent(), Field.Store.YES);
+
+        Field url = new TextField("url", getUrl(), Field.Store.YES);
+
+        document.add(id);
+        document.add(author);
+        document.add(title);
+        document.add(content);
+        document.add(url);
+
+        return document;
+    }
+
 }

@@ -44,10 +44,10 @@ public class BookMain {
     }
 
     public static void main(String[] args) throws Exception {
+        long start = System.currentTimeMillis();
 //        createIndex();
-
         indexSearch("description:spring");
-
+        System.out.println("一共花费了:" + (System.currentTimeMillis() - start) + "毫秒！");
     }
 
     private static void createIndex() throws IOException {
@@ -113,7 +113,7 @@ public class BookMain {
         // 根据查询条件匹配出的记录总数
         int count = topDocs.totalHits;
 
-        System.out.println("匹配出的记录总数:" + count);
+        System.out.println("匹配出的记录总数:" + count + "\n==========================");
 
         // 根据查询条件匹配出的记录
         ScoreDoc[] scoreDocs = topDocs.scoreDocs;
