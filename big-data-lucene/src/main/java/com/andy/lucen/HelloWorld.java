@@ -12,11 +12,10 @@ public class HelloWorld {
     public static void main(String[] args) {
         Article article = new Article();
         article.setId(10006L);
-        article.setAuthor("赵兴");
+        article.setAuthor("张三");
         article.setTitle("标题");
-        article.setContent("如何中奖");
+        article.setContent("如何才能中彩票");
         article.setUrl("http://www.baidu.com");
-
         String indexPath = "d:/tmp/words";
 
 
