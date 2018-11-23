@@ -2,6 +2,10 @@ package com.andy.lucen;
 
 import org.apache.lucene.document.*;
 
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.TextField;
+
 /**
  * <p>
  *
@@ -20,15 +24,15 @@ public class Article {
 
     private String url;
 
+    public Article() {
+    }
+
     public Article(Long id, String author, String title, String content, String url) {
         this.id = id;
         this.author = author;
         this.title = title;
         this.content = content;
         this.url = url;
-    }
-
-    public Article() {
     }
 
     public Long getId() {
