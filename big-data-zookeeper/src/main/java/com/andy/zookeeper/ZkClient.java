@@ -3,7 +3,6 @@ package com.andy.zookeeper;
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
 
-import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -12,23 +11,29 @@ import java.util.concurrent.CountDownLatch;
  **/
 public class ZkClient {
 
-    private static CountDownLatch countDownLatch=new CountDownLatch(1);
+    private static CountDownLatch countDownLatch = new CountDownLatch(1);
 
-    private final static String zk_url="39.108.125.41:2183";
+    private final static String ZK_URL = "39.108.125.41:2181";
 
-    private final static int time_out=5000;
+    private final static int TIME_OUT = 5000;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws Exception {
+        demo2();
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    public static void demo1() throws Exception {
         //初始化zk
-        ZooKeeper zooKeeper=new ZooKeeper(zk_url, time_out, new Watcher() {
-            public void process(WatchedEvent watchedEvent) {
-                Event.KeeperState state = watchedEvent.getState();
-                Event.EventType type = watchedEvent.getType();
-                if(Event.KeeperState.SyncConnected==state){
-                    if(Event.EventType.None==type){
-                        //调用此方法测计数减一
-                        countDownLatch.countDown();
-                    }
+        ZooKeeper zooKeeper = new ZooKeeper(ZK_URL, TIME_OUT, (WatchedEvent watchedEvent) -> {
+            Watcher.Event.KeeperState state = watchedEvent.getState();
+            Watcher.Event.EventType type = watchedEvent.getType();
+            if (Watcher.Event.KeeperState.SyncConnected == state) {
+                if (Watcher.Event.EventType.None == type) {
+                    //调用此方法测计数减一
+                    countDownLatch.countDown();
                 }
             }
         });
@@ -36,14 +41,14 @@ public class ZkClient {
         countDownLatch.await();
         try {
             //创建持久化节点
-            zooKeeper.create("/com.andy","你好".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+            zooKeeper.create("/com.andy", "你好".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
             //获取节点数据
             byte[] data = zooKeeper.getData("/com.andy", false, null);
             System.out.println(new String(data));
             //修改节点数据
-            zooKeeper.setData("/com.andy","james".getBytes(),0);
+            zooKeeper.setData("/com.andy", "james".getBytes(), 0);
             //删除节点数据
-            zooKeeper.delete("/com.andy",-1);
+            zooKeeper.delete("/com.andy", -1);
             //创建临时节点 异步创建
             zooKeeper.create("/com.andy", "tmp".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL, new AsyncCallback.StringCallback() {
                 public void processResult(int i, String s, Object o, String s1) {
@@ -52,7 +57,7 @@ public class ZkClient {
                     System.out.println(s1);
                     System.out.println(s);
                 }
-            },"a");
+            }, "a");
             //获取临时节点数据
             byte[] jingangs = zooKeeper.getData("/com.andy", false, null);
             System.out.println(new String(jingangs));
@@ -63,6 +68,18 @@ public class ZkClient {
             e.printStackTrace();
         }
         zooKeeper.close();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static void demo2() throws Exception {
+        ZooKeeper zooKeeper = new ZooKeeper(ZK_URL, TIME_OUT, null);
+        String s = zooKeeper.create("/abc", "hello world".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+
+        zooKeeper.close();
+
+
     }
 
 
