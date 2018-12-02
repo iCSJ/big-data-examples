@@ -9,7 +9,7 @@ import org.apache.lucene.document.TextField;
 /**
  * <p>
  *
- * @author Leone
+ * @author leone
  * @since 2018-11-22
  **/
 public class Article {

@@ -3,7 +3,7 @@ package com.andy.lucen;
 /**
  * <p>
  *
- * @author: Leone
+ * @author leone
  * @since: 2018-11-23
  **/
 public class Book {

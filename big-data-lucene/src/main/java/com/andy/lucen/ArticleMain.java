@@ -11,7 +11,7 @@ import java.nio.file.FileSystems;
 /**
  * <p> lucene测试
  *
- * @author Leone
+ * @author leone
  * @since 2018-11-22
  **/
 public class ArticleMain {

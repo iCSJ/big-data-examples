@@ -2,6 +2,12 @@ package com.com.andy.spark.wc
 
 import org.apache.spark.{SparkConf, SparkContext}
 
+/**
+  * <p>
+  *
+  * @author Leone
+  * @since 2018-06-02
+  **/
 object WorldCount {
 
   def main(args: Array[String]): Unit = {
@@ -12,7 +18,7 @@ object WorldCount {
 
     val rdd1 = sc.textFile("d:\\tmp\\user.dta")
     val rdd2 = rdd1.flatMap(line => line.split(" "))
-    val rdd3 = rdd2.map((_,1))
+    val rdd3 = rdd2.map((_, 1))
     val rdd4 = rdd3.reduceByKey(_ + _)
     val r = rdd4.collect()
     r.foreach(println)

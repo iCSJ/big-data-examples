@@ -17,7 +17,7 @@ import java.nio.file.FileSystems;
 /**
  * <p>
  *
- * @author Leone
+ * @author leone
  * @since 2018-11-21
  **/
 public class WcMain {

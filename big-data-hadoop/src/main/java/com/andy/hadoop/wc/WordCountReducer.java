@@ -11,7 +11,7 @@ import java.util.Iterator;
 /**
  * <p>
  *
- * @author Leone
+ * @author leone
  * @since 2018-11-21
  **/
 public class WordCountReducer extends Reducer<Text, IntWritable, Text, LongWritable> {

@@ -15,9 +15,10 @@ import java.util.List;
 
 /**
  * @author leone
- * @since 2018-06-10 20:37
+ * @since 2018-06-10
  **/
 public class WorldCountJava {
+
     public static void main(String[] args) {
 
         SparkConf conf = new SparkConf();
@@ -27,11 +28,11 @@ public class WorldCountJava {
         JavaSparkContext sc = new JavaSparkContext(conf);
 
         JavaRDD<String> rdd = sc.textFile("d:\\tmp\\user.dta");
-        
+
         JavaRDD<String> rdd2 = rdd.flatMap(new FlatMapFunction<String, String>() {
             public Iterator<String> call(String s) {
                 List<String> list = new ArrayList<String>();
-                String [] arr = s.split(" ");
+                String[] arr = s.split(" ");
                 for (String str : arr) {
                     list.add(str);
                 }
@@ -56,9 +57,6 @@ public class WorldCountJava {
         for (Tuple2<String, Integer> t : list) {
             System.out.println(t._1 + ":" + t._2);
         }
-
-
-
 
     }
 }

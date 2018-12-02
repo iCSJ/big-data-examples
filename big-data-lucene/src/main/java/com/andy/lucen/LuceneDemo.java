@@ -22,7 +22,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 /**
  * <p>
  *
- * @author: Leone
+ * @author leone
  * @since: 2018-11-23
  **/
 public class LuceneDemo {

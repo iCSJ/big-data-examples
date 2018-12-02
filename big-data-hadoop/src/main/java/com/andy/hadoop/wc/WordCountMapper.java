@@ -10,7 +10,7 @@ import java.io.IOException;
 /**
  * <p>
  *
- * @author Leone
+ * @author leone
  * @since 2018-11-21
  **/
 public class WordCountMapper extends Mapper<LongWritable, Text, Text, IntWritable> {

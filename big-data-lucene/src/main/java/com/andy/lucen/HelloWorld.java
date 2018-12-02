@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 /**
  * <p> lucene测试
  *
- * @author Leone
+ * @author leone
  * @since 2018-11-22
  **/
 public class HelloWorld {
