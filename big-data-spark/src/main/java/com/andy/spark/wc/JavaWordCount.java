@@ -76,7 +76,7 @@ public class JavaWordCount {
             }
         });
 
-        // 将数据保存到hdfs中国
+        // 将数据保存到hdfs中
         result.saveAsTextFile(args[1]);
         sparkContext.stop();
     }
