@@ -25,23 +25,23 @@ public class WcMain {
     public static void main(String[] args) throws Exception {
 
         // 在代码中设置JVM系统参数，用于给job对象来获取访问HDFS的用户身份
-        System.setProperty("HADOOP_USER_NAME", "root");
+//        System.setProperty("HADOOP_USER_NAME", "root");
 
         Configuration conf = new Configuration();
         // 设置job运行时要访问的默认文件系统
-        conf.set("fs.defaultFS", "hdfs://node-1:9000");
+//        conf.set("fs.defaultFS", "hdfs://node-1:9000");
         // 设置job提交到哪去运行
-        conf.set("mapreduce.framework.name", "yarn");
-        conf.set("yarn.resourcemanager.hostname", "node-1");
+//        conf.set("mapreduce.framework.name", "yarn");
+//        conf.set("yarn.resourcemanager.hostname", "node-1");
         // 如果要从windows系统上运行这个job提交客户端程序，则需要加这个跨平台提交的参数
-        conf.set("mapreduce.app-submission.cross-platform", "true");
+//        conf.set("mapreduce.app-submission.cross-platform", "true");
 
 
         Job job = Job.getInstance();
         // 设置运行/处理该作业的类
         job.setJarByClass(WcMain.class);
         job.setJobName("WordCount");
-        job.setJar("d:/wc.jar");
+        job.setJar("/root/wc.jar");
 
         // 封装参数:本次job所要调用的Mapper实现类、Reducer实现类
         job.setMapperClass(WordCountMapper.class);
@@ -57,7 +57,7 @@ public class WcMain {
 
 
         // 设置这个作业输出结果的路径
-        Path output = new Path("/cloud/data/output");
+        Path output = new Path(args[1]);
 
         FileSystem fs = FileSystem.get(new URI("hdfs://node-1:9000"), conf, "root");
         if (fs.exists(output)) {
@@ -65,7 +65,7 @@ public class WcMain {
         }
 
         // 设置这个作业输入数据的路径
-        FileInputFormat.addInputPath(job, new Path("/cloud/data/input"));
+        FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, output);
 
         // 封装参数：想要启动的reduce task的数量
