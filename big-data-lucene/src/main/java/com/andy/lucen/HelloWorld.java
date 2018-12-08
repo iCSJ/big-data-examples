@@ -22,7 +22,7 @@ public class HelloWorld {
     public static void main(String[] args) throws IOException {
         Article article = new Article();
         article.setId(10006L);
-        article.setAuthor("赵兴");
+        article.setAuthor("老王");
         article.setTitle("标题");
         article.setContent("如何中奖");
         article.setUrl("http://www.baidu.com");
