@@ -21,42 +21,44 @@ public class WorldCountJava {
 
     public static void main(String[] args) {
 
-        SparkConf conf = new SparkConf();
-        conf.setAppName("wc-java");
-        conf.setMaster("local");
+//        SparkConf conf = new SparkConf();
+//        conf.setAppName("wc-java");
+//        conf.setMaster("local");
+//
+//        JavaSparkContext sc = new JavaSparkContext(conf);
+//
+//        JavaRDD<String> rdd = sc.textFile("d:\\tmp\\user.dta");
+//
+//        JavaRDD<String> rdd2 = rdd.flatMap(new FlatMapFunction<String, String>() {
+//            public Iterator<String> call(String s) {
+//                List<String> list = new ArrayList<String>();
+//                String[] arr = s.split(" ");
+//                for (String str : arr) {
+//                    list.add(str);
+//                }
+//                return list.iterator();
+//            }
+//        });
+//
+//        JavaPairRDD<String, Integer> rdd3 = rdd2.mapToPair(new PairFunction<String, String, Integer>() {
+//            public Tuple2<String, Integer> call(String s) {
+//                return new Tuple2<String, Integer>(s, 1);
+//            }
+//        });
+//
+//
+//        JavaPairRDD<String, Integer> rdd4 = rdd3.reduceByKey(new Function2<Integer, Integer, Integer>() {
+//            public Integer call(Integer integer, Integer integer2) throws Exception {
+//                return null;
+//            }
+//        });
+//
+//        List<Tuple2<String, Integer>> list = rdd4.collect();
+//        for (Tuple2<String, Integer> t : list) {
+//            System.out.println(t._1 + ":" + t._2);
+//        }
 
-        JavaSparkContext sc = new JavaSparkContext(conf);
-
-        JavaRDD<String> rdd = sc.textFile("d:\\tmp\\user.dta");
-
-        JavaRDD<String> rdd2 = rdd.flatMap(new FlatMapFunction<String, String>() {
-            public Iterator<String> call(String s) {
-                List<String> list = new ArrayList<String>();
-                String[] arr = s.split(" ");
-                for (String str : arr) {
-                    list.add(str);
-                }
-                return list.iterator();
-            }
-        });
-
-        JavaPairRDD<String, Integer> rdd3 = rdd2.mapToPair(new PairFunction<String, String, Integer>() {
-            public Tuple2<String, Integer> call(String s) {
-                return new Tuple2<String, Integer>(s, 1);
-            }
-        });
-
-
-        JavaPairRDD<String, Integer> rdd4 = rdd3.reduceByKey(new Function2<Integer, Integer, Integer>() {
-            public Integer call(Integer integer, Integer integer2) throws Exception {
-                return null;
-            }
-        });
-
-        List<Tuple2<String, Integer>> list = rdd4.collect();
-        for (Tuple2<String, Integer> t : list) {
-            System.out.println(t._1 + ":" + t._2);
-        }
+        System.out.println(System.getenv("HADOOP_HOME"));
 
     }
 }
