@@ -3,7 +3,7 @@ package com.andy.spark.favteacher
 import java.net.URL
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{Partition, Partitioner, SparkConf, SparkContext}
+import org.apache.spark.{Partitioner, SparkConf, SparkContext}
 
 /**
   * <p> 统计最受欢迎的老师
