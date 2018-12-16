@@ -2,26 +2,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>big-data-examples</artifactId>
+        <groupId>com.andy</groupId>
+        <version>1.0.1.RELEASE</version>
+    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.andy</groupId>
-    <artifactId>big-data-examples</artifactId>
-    <version>1.0.1.RELEASE</version>
+    <artifactId>bit-data-hbase</artifactId>
 
 
-    <modules>
-        <module>big-data-zookeeper</module>
-        <module>big-data-hadoop</module>
-        <module>big-data-hive</module>
-        <module>big-data-spark</module>
-        <module>big-data-kafka</module>
-        <module>big-data-lucene</module>
-        <module>big-data-hbase</module>
-    </modules>
-
-
-    <packaging>pom</packaging>
-
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
+            <version>1.2.9</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -34,12 +31,6 @@
                     <target>1.8</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>versions-maven-plugin</artifactId>
-                <version>2.7</version>
             </plugin>
         </plugins>
     </build>
