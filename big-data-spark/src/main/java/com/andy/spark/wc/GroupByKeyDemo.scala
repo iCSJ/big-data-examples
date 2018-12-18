@@ -25,14 +25,13 @@ object GroupByKeyDemo {
 
     val rdd3 = rdd2.groupByKey()
 
-    rdd3.collect().foreach(t=>{
+    rdd3.collect().foreach(t => {
       val key = t._1
       println(key + "-----------")
-      val v = t._2
-      println(v + "-----------")
-
+      for (e <- t._2) {
+        println(e)
+      }
     })
-
 
 
   }
