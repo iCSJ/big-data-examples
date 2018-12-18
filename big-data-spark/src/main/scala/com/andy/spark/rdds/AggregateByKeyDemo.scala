@@ -1,4 +1,4 @@
-package com.andy.spark.wc
+package com.andy.spark.rdds
 
 import org.apache.spark.{SparkConf, SparkContext}
 
