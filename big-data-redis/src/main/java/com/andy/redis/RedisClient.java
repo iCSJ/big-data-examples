@@ -1,9 +1,7 @@
 package com.andy.redis;
 
 import org.junit.Test;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +20,7 @@ public class RedisClient {
 
     private static final Integer TIME_OUT = 15000;
 
-    private static Jedis jedis = null;
+    private static Jedis jedis;
 
 
     private static final JedisPool jedisPool;
@@ -119,7 +117,7 @@ public class RedisClient {
      * redis中hash类型常用操作
      */
     @Test
-    public void testSetMap() {
+    public void testHash() {
         System.out.println("----------------redis-HashMap-----------------");
         //hset:返回值为key为新返回1，为旧覆盖旧值返回0
         System.out.println("hset:" + jedis.hset("user", "name", "wangshaoyi"));
@@ -161,5 +159,178 @@ public class RedisClient {
 
     }
 
+    /**
+     * redis中 list 类型常用操作
+     */
+    @Test
+    public void testList() {
+        System.out.println("----------------redis-List-----------------");
+        jedis.del("contacts");
+        jedis.del("contacts_old");
+
+        //lpush:批量头部插入，返回List的size
+        System.out.println("lpush:" + jedis.lpush("contacts", "xx", "yy", "zz"));
+
+        //lpushx:单个头部插入，返回List的size
+        System.out.println("lpushx:" + jedis.lpushx("contacts", "aa"));
+
+        //linsert:指定对象位置(前or后)插入
+        System.out.println("linsert:" + jedis.linsert("contacts", BinaryClient.LIST_POSITION.BEFORE, "zz", "bb"));
+
+        //lset:将指定的位置设置值（替换旧值）
+        System.out.println("lset:" + jedis.lset("contacts", 2, "cc"));
+
+        //lpop:链表头的对象
+        System.out.println("lpop:" + jedis.lpop("contacts"));
+
+        //lrange:获取list指定start、end位置value
+        System.out.println("lrange:" + jedis.lrange("contacts", 1, 3));
+
+        //ltrim:只剩start\end中list值，其余删除
+        System.out.println("ltrim:" + jedis.ltrim("contacts", 1, 3));
+
+        //lrem:删除list指定值（次数指定），返回删除个数
+        System.out.println("lrem:" + jedis.lrem("contacts", 2, "yy"));
+
+        //rpoplpush:将源list尾部对象移到目标list对象头部
+        System.out.println("rpoplpush:" + jedis.rpoplpush("contacts", "contacts_old"));
+
+        //rpush:在list尾部对象添加值
+        System.out.println("rpush:" + jedis.rpush("contacts", "aa", "bb"));
+
+        //rpop:移除在list尾部值，返回移除的对象
+        System.out.println("rpop:" + jedis.rpop("contacts"));
+
+        //brpop:阻塞尾部对象抛出，指定超时时间，返回抛出值
+        System.out.println("brpop:" + jedis.brpop(1, "contacts"));
+
+        System.out.println("blpop:" + jedis.blpop(1, "contacts"));
+
+        System.out.println("blpop（阻塞1秒返回）:" + jedis.blpop(1, "contacts"));
+
+        System.out.println("----------------redis-List-----------------\n");
+    }
+
+    /**
+     * redis中 set 类型常用操作
+     */
+    @Test
+    public void testSet() {
+        System.out.println("----------------redis-Set-----------------");
+        jedis.del("phones");
+        jedis.del("phones_old");
+        jedis.del("phones_old_1");
+        jedis.del("phones_new");
+
+
+        //sadd:集合添加元素,返回添加成功后数据
+        System.out.println("sadd:" + jedis.sadd("phones", "13600000001", "13300000001"));
+        System.out.println("sadd:" + jedis.sadd("phones", "13600000002", "13300000002"));
+
+        //scard:返回集合中元素数
+        System.out.println("scard:" + jedis.scard("phones"));
+
+        jedis.sadd("phones_old", "13600000002");
+        jedis.sadd("phones_old_1", "13300000001");
+
+        //sdiff:首set与其他set之间的差集，返回差集值
+        System.out.println("sdiff:" + jedis.sdiff("phones", "phones_old", "phones_old_1"));
+
+        //sdiffstore:首set与其他set之间的差集保存至新set，返回差集数
+        System.out.println("sdiffstore:" + jedis.sdiffstore("phones_new", "phones", "phones_old"));
+
+        //sinter:返回集合的交集
+        System.out.println("sinter:" + jedis.sinter("phones", "phones_new"));
+
+        //sismember:判断value是否为set的值
+        System.out.println("sismember:" + jedis.sismember("phones", "13600000001"));
+
+        //smembers:返回集合中成员
+        System.out.println("smembers:" + jedis.smembers("phones"));
+
+        //smove:将首源set中元素移动目标set，返回移动数
+        System.out.println("smove:" + jedis.smove("phones", "phones_new", "13600000002"));
+
+        //spop:随机移除set的一元素，返回移除元素
+        System.out.println("spop:" + jedis.spop("phones"));
+
+        //srandmember:随机取出集合中一个元素
+        System.out.println("srandmember:" + jedis.srandmember("phones_new"));
+
+        //srem:删除集合中指定元素
+        System.out.println("srem:" + jedis.srem("phones_new", "13600000002"));
+
+        //sunion:集合中并集
+        System.out.println("sunion:" + jedis.sunion("phones", "phones_new", "phones_old"));
+
+        System.out.println("----------------redis-Set-----------------\n");
+    }
+
+    /**
+     * redis中 SortedSet 类型常用操作
+     */
+    @Test
+    public void testSortedSet() {
+        System.out.println("----------------redis-SortedSet-----------------");
+        jedis.del("scores");
+        jedis.del("scores_1");
+        jedis.del("scores_total");
+        jedis.del("score_inter");
+        jedis.del("score_max");
+
+        //zadd:sortedSet添加元素
+        System.out.println("zadd:" + jedis.zadd("scores", 610.5, "xx"));
+        jedis.zadd("scores", 630, "yy");
+
+        //zcard:返回sortedset中元素数
+        System.out.println("zcard:" + jedis.zcard("scores"));
+
+        //zcount:返回指定分值（包括）的元素数
+        System.out.println("zcount:" + jedis.zcount("scores", 610, 620));
+
+        //zincrby:将指定值分数加分，返回加后的分数
+        System.out.println("zincrby:" + jedis.zincrby("scores", 10, "xx"));
+
+        //zrange:返回指定坐标的值
+        System.out.println("zrange:" + jedis.zrange("scores", 0, 1));
+
+        //zrangeByScore:返回指定分数范围内的对象
+        System.out.println("zrangeByScore:" + jedis.zrangeByScore("scores", 600, 700));
+
+        //zrank:返回指定值的位置（分数低->高，0开始）
+        System.out.println("zrank:" + jedis.zrank("scores", "yy"));
+
+        //zrevrank:返回指定值的位置（分数高->低，0开始）
+        System.out.println("zrevrank:" + jedis.zrevrank("scores", "yy"));
+
+
+        //zrem:删除，其中还有zremrangeByRank\zremrangeByScore
+        System.out.println("zrem:" + jedis.zrem("scores", "yy"));
+
+        jedis.zadd("scores", 630, "yy");
+        jedis.zadd("scores", 640, "zz");
+        //zrevrange：获取指定位置数据（分数从高->低）
+        System.out.println(":" + jedis.zrevrange("scores", 0, 1));
+
+        System.out.println("zrangeByScoreWithScores:" + jedis.zrangeByScoreWithScores("scores", 600, 700));
+
+        //zscore:获取指定分数
+        System.out.println("zscore:" + jedis.zscore("scores", "xx"));
+        jedis.zadd("scores_1", 630.5, "xx");
+        jedis.zadd("scores_1", 610.5, "bb");
+        jedis.zadd("scores_1", 622.5, "cc");
+
+        //zunionstore:sortedset集合的并集并保存,如果集合中元素相同，则分数相加
+        System.out.println("zunionstore:" + jedis.zunionstore("score_total", "scores", "scores_1"));
+
+        ZParams zParams = new ZParams();
+        zParams.aggregate(ZParams.Aggregate.MAX);//指定分数操作：+，最小，最大
+        zParams.weightsByDouble(1, 0.1);//分数中的乘法因子
+        System.out.println("zunionstore:" + jedis.zunionstore("score_max", zParams, "scores", "scores_1"));
+
+        //zinterstore:集合元素取交集，相同元素值相加(默认)
+        System.out.println("zinterstore:" + jedis.zinterstore("score_inter", "scores", "scores_1"));
+        System.out.println("----------------redis-SortedSet-----------------\n");
+    }
 
 }
