@@ -14,7 +14,7 @@ public class HiveTest {
     public static void main(String[] args) throws Exception {
 
         Class.forName("org.apache.hive.jdbc.HiveDriver");
-        Connection connection = DriverManager.getConnection("jdbc:hive2://120.76.77.230:10000/default", "hive", "");
+        Connection connection = DriverManager.getConnection("jdbc:hive2://node-1:10000/test", "hive", "");
         Statement statement = connection.createStatement();
         ResultSet result = statement.executeQuery("select id, name, age from person");
 

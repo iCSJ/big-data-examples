@@ -2,7 +2,12 @@ package com.andy.zookeeper;
 
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -13,12 +18,29 @@ public class ZkClient {
 
     private static CountDownLatch countDownLatch = new CountDownLatch(1);
 
+    private final static Logger logger = LoggerFactory.getLogger(ZkClient.class);
+
     private final static String ZK_URL = "39.108.125.41:2181";
 
     private final static int TIME_OUT = 5000;
 
+    public static ZooKeeper zkClient = null;
+
     public static void main(String[] args) throws Exception {
-        demo2();
+
+    }
+
+    @Before
+    public void init() throws Exception {
+        zkClient = new ZooKeeper(ZK_URL, TIME_OUT, (WatchedEvent event) -> {
+            // 收到事件通知后的回调函数（应该是我们自己的事件处理逻辑）
+            logger.info(event.getType() + "---" + event.getPath());
+            try {
+                zkClient.getChildren("/", true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
 
@@ -70,13 +92,76 @@ public class ZkClient {
         zooKeeper.close();
     }
 
+
     /**
+     * 设置值
+     *
      * @throws Exception
      */
-    public static void demo2() throws Exception {
-        ZooKeeper zooKeeper = new ZooKeeper(ZK_URL, TIME_OUT, null);
-        String s = zooKeeper.create("/abc", "hello world".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-        zooKeeper.close();
+    @Test
+    public void testSetData() throws Exception {
+        zkClient.setData("/eclipse", "world".getBytes(), -1);
+        byte[] data = zkClient.getData("/eclipse", false, null);
+        System.out.println(new String(data));
+    }
+
+    /**
+     * 创建节点
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testCreate() throws Exception {
+        // 参数1：要创建的节点的路径 参数2：节点数据 参数3：节点的权限 参数4：节点的类型
+        zkClient.create("/eclipse/aaa", "aaaData".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+    }
+
+
+    /**
+     * 测试某节点是否存在
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testExists() throws Exception {
+        Stat stat = zkClient.exists("/eclipse", false);
+        System.out.println(stat == null ? "not exist" : "exist");
+    }
+
+    /**
+     * 获取子节点
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testGetChild() throws Exception {
+        List<String> children = zkClient.getChildren("/", true);
+        for (String child : children) {
+            System.out.println(child);
+        }
+    }
+
+    /**
+     * 删除节点
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testDelete() throws Exception {
+        // 参数2：指定要删除的版本，-1表示删除所有版本
+        zkClient.delete("/abc", -1);
+    }
+
+
+    /**
+     * 获取节点的数据
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testGetDate() throws Exception {
+        byte[] data = zkClient.getData("/eclipse", false, null);
+        System.out.println(new String(data));
     }
 
 
