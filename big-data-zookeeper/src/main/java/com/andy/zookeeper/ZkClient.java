@@ -76,10 +76,7 @@ public class ZkClient {
     public static void demo2() throws Exception {
         ZooKeeper zooKeeper = new ZooKeeper(ZK_URL, TIME_OUT, null);
         String s = zooKeeper.create("/abc", "hello world".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-
         zooKeeper.close();
-
-
     }
 
 
