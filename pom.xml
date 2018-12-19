@@ -8,6 +8,7 @@
     <artifactId>big-data-examples</artifactId>
     <version>1.0.1.RELEASE</version>
 
+    <packaging>pom</packaging>
 
     <modules>
         <module>big-data-zookeeper</module>
@@ -19,12 +20,9 @@
         <module>big-data-hbase</module>
     </modules>
 
-
-    <packaging>pom</packaging>
-
-
     <build>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -41,8 +39,8 @@
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>2.7</version>
             </plugin>
+
         </plugins>
     </build>
-
 
 </project>
