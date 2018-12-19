@@ -39,10 +39,10 @@ public class JavaLambdaWordCount {
         JavaPairRDD<String, Integer> reduce = wordAndOne.reduceByKey((Function2<Integer, Integer, Integer>) (v1, v2) -> v1 + v2);
 
         // 排序
-        JavaPairRDD<Integer, String> swaped = reduce.mapToPair((PairFunction<Tuple2<String, Integer>, Integer, String>) Tuple2::swap);
+        JavaPairRDD<Integer, String> swap = reduce.mapToPair((PairFunction<Tuple2<String, Integer>, Integer, String>) Tuple2::swap);
 
         // 排序
-        JavaPairRDD<Integer, String> sorted = swaped.sortByKey(false);
+        JavaPairRDD<Integer, String> sorted = swap.sortByKey(false);
 
         // 调整顺序
         JavaPairRDD<String, Integer> result = sorted.mapToPair((PairFunction<Tuple2<Integer, String>, String, Integer>) Tuple2::swap);
