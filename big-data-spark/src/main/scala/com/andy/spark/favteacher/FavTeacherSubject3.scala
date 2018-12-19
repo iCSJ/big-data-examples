@@ -31,7 +31,7 @@ object FavTeacherSubject3 {
 
     val reduced: RDD[((String, String), Int)] = subjectAndTeacher.reduceByKey(_ + _)
 
-//    reduced.partitionBy()/
+    //    reduced.partitionBy()/
 
     sc.stop()
   }

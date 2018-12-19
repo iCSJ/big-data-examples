@@ -12,7 +12,7 @@ import scala.Tuple2;
 import java.util.Arrays;
 
 /**
- * <p>
+ * <p> java lambda 版本的 word count
  *
  * @author leone
  * @since 2018-12-02
@@ -21,9 +21,9 @@ public class JavaLambdaWordCount {
 
     public static void main(String[] args) {
 
-        SparkConf sparkConf = new SparkConf().setAppName("javaLambdaWordCount");
+        SparkConf sparkConf = new SparkConf().setAppName("java-lambda-word-count").setMaster("local[4]");
 
-        // 创建sparkContext
+        // 创建 sparkContext
         JavaSparkContext sparkContext = new JavaSparkContext(sparkConf);
 
         // 指定从哪里读取数据
@@ -44,14 +44,14 @@ public class JavaLambdaWordCount {
         // 排序
         JavaPairRDD<Integer, String> sorted = swaped.sortByKey(false);
 
-
         // 调整顺序
         JavaPairRDD<String, Integer> result = sorted.mapToPair((PairFunction<Tuple2<Integer, String>, String, Integer>) Tuple2::swap);
 
-        // 将数据保存到HDFS中
+        // 将数据保存到指定位置中
         result.saveAsTextFile(args[1]);
-        sparkContext.stop();
 
+        // 关闭 sparkContext
+        sparkContext.stop();
 
     }
 

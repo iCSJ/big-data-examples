@@ -54,6 +54,6 @@ public class JavaWordCount1 {
         // 关闭sparkContext
         sparkContext.close();
 
-
     }
+
 }

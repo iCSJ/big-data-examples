@@ -14,10 +14,9 @@ object ScalaWordCount {
   def main(args: Array[String]): Unit = {
 
     // 创建spark配置 设置应用程序名称
-    val conf = new SparkConf().setAppName("scalaWordCount");
+    val conf = new SparkConf().setAppName("scalaWordCount").setMaster("local[4]");
 
-
-    // spark执行入口
+    // spark 上下文
     val sc = new SparkContext(conf)
 
     // 指定以后从哪里读取数据创建RDD
@@ -35,7 +34,7 @@ object ScalaWordCount {
     // 排序
     val sorted: RDD[(String, Int)] = reduce.sortBy(_._2, false)
 
-    // 将结果保存到HDFS中
+    // 将结果保存到指定位置中
     sorted.saveAsTextFile(args(1))
 
     // 释放资源

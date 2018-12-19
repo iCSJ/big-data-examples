@@ -7,6 +7,7 @@
         <groupId>com.andy</groupId>
         <version>1.0.1.RELEASE</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>big-data-spark</artifactId>
@@ -49,14 +50,14 @@
 
         <pluginManagement>
             <plugins>
-                <!-- 编译scala的插件 -->
+                <!-- scala 编译插件 -->
                 <plugin>
                     <groupId>net.alchim31.maven</groupId>
                     <artifactId>scala-maven-plugin</artifactId>
                     <version>3.2.2</version>
                 </plugin>
 
-                <!-- 编译java的插件 -->
+                <!-- java 编译插件 -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>

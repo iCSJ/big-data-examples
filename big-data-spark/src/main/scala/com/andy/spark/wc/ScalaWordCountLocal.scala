@@ -16,7 +16,6 @@ object ScalaWordCountLocal {
     // 创建spark配置 设置应用程序名称
     val conf = new SparkConf().setAppName("scalaWordCount").setMaster("local[4]");
 
-
     // spark执行入口
     val sc = new SparkContext(conf)
 
