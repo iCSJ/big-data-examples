@@ -18,6 +18,7 @@
         <module>big-data-kafka</module>
         <module>big-data-lucene</module>
         <module>big-data-hbase</module>
+        <module>big-data-redis</module>
     </modules>
 
     <build>

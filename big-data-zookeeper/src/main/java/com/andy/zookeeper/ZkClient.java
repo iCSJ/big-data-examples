@@ -11,6 +11,29 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 /**
+ * ZooKeeper -server host:port cmd args
+ *         stat path [watch]
+ *         set path data [version]
+ *         ls path [watch]
+ *         delquota [-n|-b] path
+ *         ls2 path [watch]
+ *         setAcl path acl
+ *         setquota -n|-b val path
+ *         history
+ *         redo cmdno
+ *         printwatches on|off
+ *         delete path [version]
+ *         sync path
+ *         listquota path
+ *         rmr path
+ *         get path [watch]
+ *         create [-s] [-e] path data acl
+ *         addauth scheme auth
+ *         quit
+ *         getAcl path
+ *         close
+ *         connect host:port
+ *
  * @author leone
  * @since 2018-06-16
  **/
@@ -24,7 +47,7 @@ public class ZkClient {
 
     private final static int TIME_OUT = 5000;
 
-    public static ZooKeeper zkClient = null;
+    private static ZooKeeper zkClient = null;
 
     public static void main(String[] args) throws Exception {
 
@@ -81,8 +104,8 @@ public class ZkClient {
                 }
             }, "a");
             //获取临时节点数据
-            byte[] jingangs = zooKeeper.getData("/com.andy", false, null);
-            System.out.println(new String(jingangs));
+            byte[] tmp = zooKeeper.getData("/com.andy", false, null);
+            System.out.println(new String(tmp));
             //验证节点是否存在
             Stat exists = zooKeeper.exists("/com.andy", false);
             System.out.println(exists);
