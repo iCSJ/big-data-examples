@@ -19,11 +19,14 @@ import java.util.Map;
  * @since 2018-12-19
  **/
 public class ActionOperation {
+
+
     public static void main(String[] args) {
 //        reduce();
 //        count();
 //        take();
-        countByKey();
+//        countByKey();
+        saveAsTextFile();
     }
 
     /**
@@ -80,14 +83,21 @@ public class ActionOperation {
         sparkContext.close();
     }
 
-    public static void saveAsFile() {
+    /**
+     * saveAsTextFile 算子
+     */
+    public static void saveAsTextFile() {
         JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("action").setMaster("local"));
         List<Integer> numberList = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
         JavaRDD<Integer> numbers = sparkContext.parallelize(numberList);
-
+        numbers.saveAsTextFile("htfs://node-1:9000/tmp.txt");
         sparkContext.close();
     }
 
+
+    /**
+     * countByKey 算子
+     */
     public static void countByKey() {
         JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("action").setMaster("local"));
         List<Tuple2<String, String>> scoresList = Arrays.asList(
@@ -103,8 +113,6 @@ public class ActionOperation {
         for (Map.Entry<String, Long> stu : count.entrySet()) {
             System.out.println("stu" + stu.getKey() + "val" + stu.getValue());
         }
-
-
         sparkContext.close();
     }
 

@@ -67,6 +67,17 @@ object ActionOperation {
   }
 
   /**
+    * saveAsFile 操作
+    */
+  def saveAsTextFile(): Unit = {
+    val sc = new SparkContext(new SparkConf().setAppName("action").setMaster("local"))
+    val numberArray = Array(1, 2, 3, 4, 5, 6, 7, 8, 9)
+    val numbers = sc.parallelize(numberArray)
+    numbers.saveAsTextFile("hdfs://node-1:9000/a.txt")
+    sc.stop()
+  }
+
+  /**
     * countByKey 操作
     */
   def countByKey(): Unit = {
