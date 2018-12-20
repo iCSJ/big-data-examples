@@ -1,4 +1,4 @@
-package com.andy.spark.wc;
+package com.andy.spark;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
@@ -15,7 +15,7 @@ import scala.Tuple2;
  * @author leone
  * @since 2018-06-10
  **/
-public class JavaWordCount1 {
+public class JavaWordCount {
 
     public static void main(String[] args) {
 

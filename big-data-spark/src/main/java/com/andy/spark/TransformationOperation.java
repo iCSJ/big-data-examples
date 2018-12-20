@@ -46,19 +46,9 @@ public class TransformationOperation {
         JavaRDD<Integer> numbersRDD = sparkContext.parallelize(numbers);
 
         // map 算子是对任何 RDD 都可以调用的，在 java 中 map 算子接受的是 function 对象
-        JavaRDD<Integer> multipleNumberRDD = numbersRDD.map(new Function<Integer, Integer>() {
-            @Override
-            public Integer call(Integer integer) throws Exception {
-                return integer * 2;
-            }
-        });
+        JavaRDD<Integer> multipleNumberRDD = numbersRDD.map((Function<Integer, Integer>) integer -> integer * 2);
 
-        multipleNumberRDD.foreach(new VoidFunction<Integer>() {
-            @Override
-            public void call(Integer integer) throws Exception {
-                System.out.println(integer);
-            }
-        });
+        multipleNumberRDD.foreach((VoidFunction<Integer>) integer -> System.out.println(integer));
 
         sparkContext.close();
 
