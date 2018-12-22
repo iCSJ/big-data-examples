@@ -22,26 +22,26 @@ object ScalaWordCount {
     // 指定以后从哪里读取数据创建RDD
     val lines: RDD[String] = sc.textFile(args(0))
 
-    val words = lines.flatMap{line => line.split(" ")}
+    val words = lines.flatMap { line => line.split(" ") }
 
-    val pairs = words.map{word => (word, 1)}
+    val pairs = words.map { word => (word, 1) }
 
     pairs.foreach(w => println(w._1 + "---" + w._2))
 
-//    // 切分压片
-//    val words: RDD[String] = lines.flatMap(_.split(" "))
-//
-//    // 将单词和一组合
-//    val wordAndOne: RDD[(String, Int)] = words.map((_, 1))
-//
-//    // 按照key进行聚合
-//    val reduce: RDD[(String, Int)] = wordAndOne.reduceByKey(_ + _)
-//
-//    // 排序
-//    val sorted: RDD[(String, Int)] = reduce.sortBy(_._2, false)
-//
-//    // 将结果保存到指定位置中
-//    sorted.saveAsTextFile(args(1))
+    //    // 切分压片
+    //    val words: RDD[String] = lines.flatMap(_.split(" "))
+    //
+    //    // 将单词和一组合
+    //    val wordAndOne: RDD[(String, Int)] = words.map((_, 1))
+    //
+    //    // 按照key进行聚合
+    //    val reduce: RDD[(String, Int)] = wordAndOne.reduceByKey(_ + _)
+    //
+    //    // 排序
+    //    val sorted: RDD[(String, Int)] = reduce.sortBy(_._2, false)
+    //
+    //    // 将结果保存到指定位置中
+    //    sorted.saveAsTextFile(args(1))
 
     // 释放资源
     sc.stop()

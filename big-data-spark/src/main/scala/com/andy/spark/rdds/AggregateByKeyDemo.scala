@@ -22,8 +22,6 @@ object AggregateByKeyDemo {
     val rdd3 = rdd2.map((_, 1))
 
 
-
-
   }
 
 }
