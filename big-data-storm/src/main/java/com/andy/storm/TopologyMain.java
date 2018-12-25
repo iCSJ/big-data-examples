@@ -6,6 +6,8 @@ import org.apache.storm.generated.AlreadyAliveException;
 import org.apache.storm.generated.InvalidTopologyException;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>
@@ -14,6 +16,9 @@ import org.apache.storm.tuple.Fields;
  * @since 2018-12-25
  **/
 public class TopologyMain {
+
+
+    private static Logger logger = LoggerFactory.getLogger(WordCountBolt.class);
 
     public static void main(String[] args) throws AlreadyAliveException, InvalidTopologyException {
         //Storm框架支持多语言，在Java环境下创建一个拓扑，需要使用TopologyBuilder进行构建

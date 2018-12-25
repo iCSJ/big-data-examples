@@ -7,6 +7,8 @@ import org.apache.storm.topology.base.BaseBasicBolt;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -17,6 +19,8 @@ import java.util.Map;
  * @since 2018-12-25
  **/
 public class SplitSentenceBolt extends BaseBasicBolt {
+
+    private static Logger logger = LoggerFactory.getLogger(WordCountBolt.class);
 
     /**
      * 该方法只会被调用一次，用来初始化
@@ -43,7 +47,7 @@ public class SplitSentenceBolt extends BaseBasicBolt {
         for (String word : words) {
             word = word.trim();
             word = word.toLowerCase();
-            System.out.println("SplitSentenceBolt 切割单词：" + word);
+            logger.info("SplitSentenceBolt 切割单词：" + word);
             collector.emit(new Values(word, 1));
         }
     }

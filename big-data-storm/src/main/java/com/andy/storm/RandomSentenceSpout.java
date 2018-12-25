@@ -6,6 +6,8 @@ import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichSpout;
 import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Values;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Random;
@@ -17,6 +19,8 @@ import java.util.Random;
  * @since 2018-12-25
  **/
 public class RandomSentenceSpout extends BaseRichSpout {
+
+    private static Logger logger = LoggerFactory.getLogger(WordCountBolt.class);
 
     //用来收集Spout输出的tuple
     private SpoutOutputCollector collector;
@@ -49,7 +53,7 @@ public class RandomSentenceSpout extends BaseRichSpout {
 
         String sentence = sentences[random.nextInt(sentences.length)];
         collector.emit(new Values(sentence));
-        System.out.println("RandomSentenceSpout 发送数据：" + sentence);
+        logger.info("RandomSentenceSpout 发送数据：" + sentence);
     }
 
     //消息源可以发射多条消息流stream
