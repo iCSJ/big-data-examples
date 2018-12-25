@@ -19,6 +19,7 @@
         <module>big-data-lucene</module>
         <module>big-data-hbase</module>
         <module>big-data-redis</module>
+        <module>big-data-storm</module>
     </modules>
 
     <build>

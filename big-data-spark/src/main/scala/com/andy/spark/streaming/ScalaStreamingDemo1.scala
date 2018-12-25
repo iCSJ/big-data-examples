@@ -25,9 +25,8 @@ object ScalaStreamingDemo1 {
 
     ss.start()
 
+    // 等待计算完成
     ss.awaitTermination()
-
-    ss.stop()
   }
 
 }
