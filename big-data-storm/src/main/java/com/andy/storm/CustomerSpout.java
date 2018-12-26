@@ -22,17 +22,27 @@ public class CustomerSpout extends BaseRichSpout {
 
     private static Logger logger = LoggerFactory.getLogger(CustomerCountBolt.class);
 
-    //用来收集Spout输出的tuple
+    // 用来收集Spout输出的tuple
     private SpoutOutputCollector collector;
 
     private Random random;
 
+    private String[] sentences = new String[]{
+            "the cow jumped over the moon",
+            "the dog jumped over the moon",
+            "the pig jumped over the gun",
+            "the fish jumped over the moon",
+            "the duck jumped over the moon",
+            "the man jumped over the sun",
+            "the girl jumped over the sun",
+            "the boy jumped over the sun"};
 
-    //该方法调用一次，主要由storm框架传入SpoutOutputCollector
+
+    // 该方法调用一次，主要由storm框架传入SpoutOutputCollector
     public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
         this.collector = collector;
         random = new Random();
-        //连接kafka mysql ,打开本地文件
+        // 连接kafka mysql ,打开本地文件
     }
 
     /**
@@ -41,22 +51,12 @@ public class CustomerSpout extends BaseRichSpout {
      * spout.nextTuple()
      */
     public void nextTuple() {
-        String[] sentences = new String[]{
-                "the cow jumped over the moon",
-                "the dog jumped over the moon",
-                "the pig jumped over the gun",
-                "the fish jumped over the moon",
-                "the duck jumped over the moon",
-                "the man jumped over the sun",
-                "the girl jumped over the sun",
-                "the boy jumped over the sun"};
-
         String sentence = sentences[random.nextInt(sentences.length)];
         collector.emit(new Values(sentence));
-        logger.info("RandomSentenceSpout 发送数据：" + sentence);
+        logger.info("customerSpout 发送数据：" + sentence);
     }
 
-    //消息源可以发射多条消息流stream
+    // 消息源可以发射多条消息流stream
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields("sentence"));
     }
