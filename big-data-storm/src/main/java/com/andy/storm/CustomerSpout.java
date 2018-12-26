@@ -18,9 +18,9 @@ import java.util.Random;
  * @author leone
  * @since 2018-12-25
  **/
-public class RandomSentenceSpout extends BaseRichSpout {
+public class CustomerSpout extends BaseRichSpout {
 
-    private static Logger logger = LoggerFactory.getLogger(WordCountBolt.class);
+    private static Logger logger = LoggerFactory.getLogger(CustomerCountBolt.class);
 
     //用来收集Spout输出的tuple
     private SpoutOutputCollector collector;

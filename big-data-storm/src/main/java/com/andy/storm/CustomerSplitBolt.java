@@ -18,9 +18,9 @@ import java.util.Map;
  * @author leone
  * @since 2018-12-25
  **/
-public class SplitSentenceBolt extends BaseBasicBolt {
+public class CustomerSplitBolt extends BaseBasicBolt {
 
-    private static Logger logger = LoggerFactory.getLogger(WordCountBolt.class);
+    private static Logger logger = LoggerFactory.getLogger(CustomerCountBolt.class);
 
     /**
      * 该方法只会被调用一次，用来初始化

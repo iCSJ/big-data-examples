@@ -21,7 +21,7 @@ import java.util.Objects;
  **/
 public class TopologyMain {
 
-    private static Logger logger = LoggerFactory.getLogger(WordCountBolt.class);
+    private static Logger logger = LoggerFactory.getLogger(CustomerCountBolt.class);
 
     public static void main(String[] args) throws AlreadyAliveException, InvalidTopologyException, AuthorizationException {
 
@@ -29,13 +29,13 @@ public class TopologyMain {
         TopologyBuilder builder = new TopologyBuilder();
 
         //RandomSentenceSpout类，在已知的英文句子中，随机发送一条句子出去
-        builder.setSpout("spout1", new RandomSentenceSpout(), 3);
+        builder.setSpout("spout1", new CustomerSpout(), 3);
 
         //SplitSentenceBolt类，主要是将一行一行的文本内容切割成单词
-        builder.setBolt("split1", new SplitSentenceBolt(), 9).shuffleGrouping("spout1");
+        builder.setBolt("split1", new CustomerSplitBolt(), 9).shuffleGrouping("spout1");
 
         //WordCountBolt类，对单词出现的次数进行统计
-        builder.setBolt("count2", new WordCountBolt(), 3).fieldsGrouping("split1", new Fields("word"));
+        builder.setBolt("count2", new CustomerCountBolt(), 3).fieldsGrouping("split1", new Fields("word"));
 
         //启动topology的配置信息
         Config conf = new Config();

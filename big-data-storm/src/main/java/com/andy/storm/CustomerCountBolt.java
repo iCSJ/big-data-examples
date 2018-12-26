@@ -17,9 +17,9 @@ import java.util.Map;
  * @author leone
  * @since 2018-12-25
  **/
-public class WordCountBolt extends BaseBasicBolt {
+public class CustomerCountBolt extends BaseBasicBolt {
 
-    private static Logger logger = LoggerFactory.getLogger(WordCountBolt.class);
+    private static Logger logger = LoggerFactory.getLogger(CustomerCountBolt.class);
 
     private Map<String, Integer> counters = new HashMap<>();
 
