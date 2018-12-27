@@ -24,9 +24,6 @@ public class WcMain {
 
     public static void main(String[] args) throws Exception {
 
-        // 在代码中设置JVM系统参数，用于给job对象来获取访问HDFS的用户身份
-//        System.setProperty("HADOOP_USER_NAME", "root");
-
         Configuration conf = new Configuration();
         // 设置job运行时要访问的默认文件系统
 //        conf.set("fs.defaultFS", "hdfs://node-1:9000");

@@ -1,10 +1,9 @@
 package com.andy.lucene;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
-import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.*;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -19,10 +18,15 @@ import org.apache.lucene.store.FSDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -36,7 +40,7 @@ public class BookMain {
 
     private static List<Book> books = new ArrayList<>();
 
-    private static String dirPath = "E:\\tmp\\lucene\\docDir";
+    private static String docPath = "E:\\tmp\\lucene\\docDir";
     private static String indexPath = "E:\\tmp\\lucene\\indexDir";
 
     static {
@@ -49,10 +53,27 @@ public class BookMain {
     }
 
     public static void main(String[] args) throws Exception {
+
+        Map<String, String> doc = new HashMap<>();
+        doc.put("文件名称", "fileName");
+        doc.put("文件大小", "fileSize");
+        doc.put("文件路径", "filePath");
+        doc.put("文件内容", "fileContent");
+
+        Map<String, String> book = new HashMap<>();
+        book.put("商品ID", "book_id");
+        book.put("商品名称", "name");
+        book.put("商品价格", "price");
+        book.put("商品图片地址", "picture");
+        book.put("商品描述", "description");
+
         long start = System.currentTimeMillis();
 //        createIndex();
-        indexSearch("name:Java");
+//        createFileIndex();
+        indexSearch("fileName:git", doc);
 //        indexSearch("description:spring");
+
+
         logger.info("一共花费了:{}毫秒!", (System.currentTimeMillis() - start));
     }
 
@@ -82,37 +103,71 @@ public class BookMain {
             document.add(description);
             docList.add(document);
         }
-
         // 创建分词器，标准分词器
         Analyzer analyzer = new StandardAnalyzer();
-
         // 创建IndexWriter
         IndexWriterConfig cfg = new IndexWriterConfig(analyzer);
-
         // 指定索引库的地址
         Directory directory = FSDirectory.open(FileSystems.getDefault().getPath(indexPath));
-
         // 创建索引writer
         IndexWriter writer = new IndexWriter(directory, cfg);
-
         // 清除以前的index
         writer.deleteAll();
-
         // 通过IndexWriter对象将Document写入到索引库中
         for (Document doc : docList) {
             writer.addDocument(doc);
         }
-
         // 关闭writer
         writer.close();
     }
 
-    private static void searchDocument(Query query) throws IOException {
+    /**
+     * 从文件创建索引
+     */
+    private static void createFileIndex() throws Exception {
+        Path path = new File(indexPath).toPath();
+        Directory directory = FSDirectory.open(path);
+        //标准分词器
+        Analyzer analyzer = new StandardAnalyzer();
+        IndexWriterConfig config = new IndexWriterConfig(analyzer);
+        IndexWriter writer = new IndexWriter(directory, config);
+        // 清除以前的index
+        writer.deleteAll();
+
+        //需要分析的文件目录 ,注意目录下不能用文件夹
+        File[] listFiles = new File(docPath).listFiles();
+        if (null != listFiles && listFiles.length > 0) {
+            for (File file : listFiles) {
+                Document document = new Document();
+                //文件名称
+                Field fileName = new TextField("fileName", file.getName(), Field.Store.YES);
+                //文件大小
+                Field fileSize = new StringField("fileSize", Long.toString(FileUtils.sizeOf(file)), Field.Store.YES);
+                //文件路径
+                Field filePath = new StoredField("filePath", file.getPath());
+                //文件内容
+                Field fileContent = new TextField("fileContent", FileUtils.readFileToString(file, StandardCharsets.UTF_8), Field.Store.YES);
+                document.add(fileName);
+                document.add(fileSize);
+                document.add(filePath);
+                document.add(fileContent);
+                writer.addDocument(document);
+                logger.info("索引文件:{}", file.getPath());
+            }
+        }
+        writer.close();
+    }
+
+
+    /**
+     * @param query
+     * @throws IOException
+     */
+    private static void searchDocument(Query query, Map<String, String> map) throws IOException {
         // 1.创建DirectoryJDK 1.7以后 open只能接收Path
         Directory directory = FSDirectory.open(FileSystems.getDefault().getPath(indexPath));
         IndexReader reader = DirectoryReader.open(directory);
         IndexSearcher searcher = new IndexSearcher(reader);
-
         // 通过searcher来搜索索引库,第二个参数指定需要显示的顶部记录的N条
         TopDocs topDocs = searcher.search(query, 10);
 
@@ -120,20 +175,16 @@ public class BookMain {
         int count = topDocs.totalHits;
 
         System.out.println("匹配出的记录总数:[ " + count + " ]\n==========================");
-
         // 根据查询条件匹配出的记录
         ScoreDoc[] scoreDocs = topDocs.scoreDocs;
-
         for (ScoreDoc scoreDoc : scoreDocs) {
             // 获取文档的ID
             int docId = scoreDoc.doc;
             // 通过ID获取文档
             Document doc = searcher.doc(docId);
-            System.out.println("商品ID:" + doc.get("book_id"));
-            System.out.println("商品名称:" + doc.get("name"));
-            System.out.println("商品价格:" + doc.get("price"));
-            System.out.println("商品图片地址:" + doc.get("picture"));
-            System.out.println("商品描述:" + doc.get("description"));
+            for (Map.Entry<String, String> entry : map.entrySet()) {
+                System.out.println(entry.getKey() + ":" + doc.get(entry.getValue()));
+            }
             System.out.println("==========================");
         }
         // 关闭资源
@@ -141,17 +192,14 @@ public class BookMain {
 
     }
 
-    public static void indexSearch(String name) throws Exception {
+    public static void indexSearch(String name, Map<String, String> map) throws Exception {
         // 创建query对象
         Analyzer analyzer = new StandardAnalyzer();
-
         // 使用QueryParser搜索时，需要指定分词器，搜索时的分词器要和索引时的分词器一致,第一个参数：默认搜索的域的名称
         QueryParser parser = new QueryParser("description", analyzer);
-
         // 参数：输入的lucene的查询语句(关键字一定要大写)
         Query query = parser.parse(name);
-
-        searchDocument(query);
+        searchDocument(query, map);
     }
 
 
