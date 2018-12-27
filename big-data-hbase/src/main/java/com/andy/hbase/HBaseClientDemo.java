@@ -11,14 +11,19 @@ import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.junit.Test;
 
 /**
- * <p> Hbase crud
+ * <p> HBase crud
  *
  * @author leone
  * @since 2018-12-16
  **/
-public class HbaseClientDemo {
+public class HBaseClientDemo {
 
 
+    /**
+     * 创建表
+     *
+     * @throws Exception
+     */
     @Test
     public void testCreateTable() throws Exception {
         Configuration conf = HBaseConfiguration.create();
@@ -41,5 +46,11 @@ public class HbaseClientDemo {
 
         admin.close();
     }
+
+
+
+
+
+
 
 }

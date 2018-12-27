@@ -46,14 +46,16 @@ public class CustomerCountBolt extends BaseBasicBolt {
     public void execute(Tuple input, BasicOutputCollector collector) {
         String str = (String) input.getValueByField("word");
         Integer num = input.getIntegerByField("num");
-        logger.info("---------------" + Thread.currentThread().getId() + " " + str);
+
+        logger.info("word:{}  num:{}", str, num);
+
         if (!counters.containsKey(str)) {
             counters.put(str, num);
         } else {
             Integer c = counters.get(str) + num;
             counters.put(str, c);
         }
-        logger.info("WordCountBolt 统计单词：" + counters);
+        logger.info("WordCountBolt 统计单词 " + counters);
     }
 
     /**

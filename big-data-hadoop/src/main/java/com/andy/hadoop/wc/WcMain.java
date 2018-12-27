@@ -2,9 +2,7 @@ package com.andy.hadoop.wc;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -12,7 +10,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.net.URI;
-import java.nio.file.FileSystems;
 
 /**
  * <p>
@@ -23,9 +20,6 @@ import java.nio.file.FileSystems;
 public class WcMain {
 
     public static void main(String[] args) throws Exception {
-
-        // 在代码中设置JVM系统参数，用于给job对象来获取访问HDFS的用户身份
-//        System.setProperty("HADOOP_USER_NAME", "root");
 
         Configuration conf = new Configuration();
         // 设置job运行时要访问的默认文件系统
@@ -44,8 +38,8 @@ public class WcMain {
         job.setJar("/root/wc.jar");
 
         // 封装参数:本次job所要调用的Mapper实现类、Reducer实现类
-        job.setMapperClass(WordCountMapper.class);
-        job.setReducerClass(WordCountReducer.class);
+        job.setMapperClass(WcMapper.class);
+        job.setReducerClass(WcReducer.class);
 
         // 封装参数：本次job的Mapper实现类、Reducer实现类产生的结果数据的key、value类型
         job.setMapOutputKeyClass(Text.class);

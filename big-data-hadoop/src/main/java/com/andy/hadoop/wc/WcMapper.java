@@ -13,7 +13,7 @@ import java.io.IOException;
  * @author leone
  * @since 2018-11-21
  **/
-public class WordCountMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+public class WcMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {

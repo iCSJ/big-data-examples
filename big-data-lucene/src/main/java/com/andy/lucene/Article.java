@@ -1,4 +1,4 @@
-package com.andy.lucen;
+package com.andy.lucene;
 
 import org.apache.lucene.document.*;
 
