@@ -10,6 +10,7 @@ import org.apache.storm.tuple.Values;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -45,11 +46,10 @@ public class CustomerSplitBolt extends BaseBasicBolt {
         String sentence = (String) input.getValueByField("sentence");
         String[] words = sentence.split(" ");
         for (String word : words) {
-            word = word.trim();
-            word = word.toLowerCase();
-            logger.info("SplitSentenceBolt 切割单词：" + word);
+            word = word.trim().toLowerCase();
             collector.emit(new Values(word, 1));
         }
+        logger.info("customerSplitBolt 切割一组单词:{}", Arrays.toString(words));
     }
 
     /**

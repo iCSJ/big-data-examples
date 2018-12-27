@@ -20,7 +20,7 @@ import java.util.Random;
  **/
 public class CustomerSpout extends BaseRichSpout {
 
-    private static Logger logger = LoggerFactory.getLogger(CustomerCountBolt.class);
+    private static Logger logger = LoggerFactory.getLogger(CustomerSpout.class);
 
     // 用来收集Spout输出的tuple
     private SpoutOutputCollector collector;
@@ -39,6 +39,7 @@ public class CustomerSpout extends BaseRichSpout {
 
 
     // 该方法调用一次，主要由storm框架传入SpoutOutputCollector
+    @Override
     public void open(Map conf, TopologyContext context, SpoutOutputCollector collector) {
         this.collector = collector;
         random = new Random();
@@ -46,10 +47,11 @@ public class CustomerSpout extends BaseRichSpout {
     }
 
     /**
-     * 上帝之手
+     * 将会循环被调用
      * while(true)
      * spout.nextTuple()
      */
+    @Override
     public void nextTuple() {
         String sentence = sentences[random.nextInt(sentences.length)];
         collector.emit(new Values(sentence));
@@ -57,6 +59,7 @@ public class CustomerSpout extends BaseRichSpout {
     }
 
     // 消息源可以发射多条消息流stream
+    @Override
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
         declarer.declare(new Fields("sentence"));
     }
