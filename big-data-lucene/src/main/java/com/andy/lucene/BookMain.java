@@ -1,4 +1,4 @@
-package com.andy.lucen;
+package com.andy.lucene;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
@@ -16,6 +16,8 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;
@@ -30,24 +32,28 @@ import java.util.List;
  **/
 public class BookMain {
 
+    private static final Logger logger = LoggerFactory.getLogger(BookMain.class);
+
     private static List<Book> books = new ArrayList<>();
 
-    private static String dirPath = "D:\\lucene\\docDir";
-    private static String indexPath = "D:\\lucene\\indexDir";
+    private static String dirPath = "E:\\tmp\\lucene\\docDir";
+    private static String indexPath = "E:\\tmp\\lucene\\indexDir";
 
     static {
-        books.add(new Book(1, "java核心编程思想", 23, "http://www.baidu.com/image.jpg", "java 是一个面向对象的语言"));
-        books.add(new Book(2, "mysql数据库设计", 12, "http://www.baidu.com/image.jpg", "mysql是一个开源免费的中小型数据库"));
-        books.add(new Book(3, "javaWEB进阶", 75, "http://www.baidu.com/image.jpg", "javaWEB核心编程技术大全"));
-        books.add(new Book(4, "spring入门", 19, "http://www.baidu.com/image.jpg", "spring 从入门到放弃需要多久"));
-        books.add(new Book(5, "springCloud 微服务实战", 42, "http://www.baidu.com/image.jpg", "微服务方案一站式解决方案spring 和 spring cloud"));
+        books.add(new Book(1, "Java核心编程思想", 23, "http://www.taobao.com/image.jpg", "Java是一门面向对象编程语言，不仅吸收了C++语言的各种优点，还摒弃了C++里难以理解的多继承、指针等概念，因此Java语言具有功能强大和简单易用两个特征。Java语言作为静态面向对象编程语言的代表，极好地实现了面向对象理论，允许程序员以优雅的思维方式进行复杂的编程"));
+        books.add(new Book(2, "mysql数据库设计", 47, "http://www.taobao.com/image.jpg", "MySQL是一个关系型数据库管理系统，由瑞典MySQL AB 公司开发，目前属于 Oracle 旗下产品。MySQL 是最流行的关系型数据库管理系统之一，在 WEB 应用方面，MySQL是最好的 RDBMS (Relational Database Management System，关系数据库管理系统) 应用软件。"));
+        books.add(new Book(3, "JavaWeb进阶", 75, "http://www.jd.com/image.jpg", "Java Web，是用Java技术来解决相关web互联网领域的技术总和。web包括：web服务器和web客户端两部分。Java在客户端的应用有java applet，不过使用得很少，Java在服务器端的应用非常的丰富，比如Servlet，JSP和第三方框架等等。Java技术对Web领域的发展注入了强大的动力。"));
+        books.add(new Book(4, "spring入门", 38, "http://www.tianmao.com/image.jpg", "Spring是一个开放源代码的设计层面框架，他解决的是业务逻辑层和其他各层的松耦合问题，因此它将面向接口的编程思想贯穿整个系统应用。Spring是于2003 年兴起的一个轻量级的Java 开发框架，由Rod Johnson创建。简单来说，Spring是一个分层的JavaSE/EE full-stack(一站式) 轻量级开源框架"));
+        books.add(new Book(5, "springCloud微服务实战", 42, "http://www.yamaxun.com/image.jpg", "Spring Cloud是一系列框架的有序集合。它利用Spring Boot的开发便利性巧妙地简化了分布式系统基础设施的开发，如服务发现注册、配置中心、消息总线、负载均衡、断路器、数据监控等，都可以用Spring Boot的开发风格做到一键启动和部署。Spring Cloud并没有重复制造轮子，它只是将目前各家公司开发的比较成熟、经得起实际考验的服务框架组合起来，通过Spring Boot风格进行再封装屏蔽掉了复杂的配置和实现原理，最终给开发者留出了一套简单易懂、易部署和易维护的分布式系统开发工具包。"));
+        books.add(new Book(5, "JavaScript高级", 71, "http://www.tianmao.com/image.jpg", "JavaScript 是属于网络的脚本语言 JavaScript 被数百万计的网页用来改进设计、验证表单、检测浏览器、创建cookies，以及更多的应用。"));
     }
 
     public static void main(String[] args) throws Exception {
         long start = System.currentTimeMillis();
 //        createIndex();
-        indexSearch("description:spring");
-        System.out.println("一共花费了:" + (System.currentTimeMillis() - start) + "毫秒！");
+        indexSearch("name:Java");
+//        indexSearch("description:spring");
+        logger.info("一共花费了:{}毫秒!", (System.currentTimeMillis() - start));
     }
 
     private static void createIndex() throws IOException {
@@ -57,8 +63,8 @@ public class BookMain {
         for (Book book : books) {
             document = new Document();
             // store:如果是yes，则说明存储到文档域中
-            // 图书ID
 
+            // 图书ID
             Field bookId = new TextField("book_id", Integer.toString(book.getBookId()), Field.Store.YES);
             // 图书名称
             Field name = new TextField("name", book.getName(), Field.Store.YES);
@@ -113,7 +119,7 @@ public class BookMain {
         // 根据查询条件匹配出的记录总数
         int count = topDocs.totalHits;
 
-        System.out.println("匹配出的记录总数:" + count + "\n==========================");
+        System.out.println("匹配出的记录总数:[ " + count + " ]\n==========================");
 
         // 根据查询条件匹配出的记录
         ScoreDoc[] scoreDocs = topDocs.scoreDocs;

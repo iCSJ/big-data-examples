@@ -1,4 +1,4 @@
-package com.andy.lucen;
+package com.andy.lucene;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.SimpleAnalyzer;
@@ -16,14 +16,15 @@ import java.nio.file.FileSystems;
  **/
 public class ArticleMain {
 
-    private static String dirPath = "D:\\lucene\\docDir";
+    private static String dirPath = "E:\\tmp\\lucene\\docDir";
 
-    private static String indexPath = "D:\\lucene\\indexDir";
+    private static String indexPath = "E:\\tmp\\lucene\\indexDir";
 
     public static void main(String[] args) throws Exception {
         Article article = new Article(10006L, "张三", "标题", "湖人总冠军", "http://www.baidu.com");
 
         Analyzer analyzer = new SimpleAnalyzer();
+
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(analyzer);
 
         FSDirectory fsDirectory = FSDirectory.open(FileSystems.getDefault().getPath(indexPath));
