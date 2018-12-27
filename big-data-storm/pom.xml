@@ -23,7 +23,7 @@
             <groupId>org.apache.storm</groupId>
             <artifactId>storm-core</artifactId>
             <version>1.1.3</version>
-            <scope>provided</scope>
+            <!--<scope>provided</scope>-->
         </dependency>
 
 
@@ -58,7 +58,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <!--<mainClass>com.xxg.Main</mainClass>-->
+                            <mainClass>com.andy.storm.log.CallLogMain</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

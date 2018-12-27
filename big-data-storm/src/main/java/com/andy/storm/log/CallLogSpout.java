@@ -58,7 +58,7 @@ public class CallLogSpout implements IRichSpout {
 
                 Integer duration = random.nextInt(4);
                 this.collector.emit(new Values(fromPhoneNumber, toPhoneNumber, duration));
-
+                System.out.println(fromPhoneNumber + ":" + toPhoneNumber);
             }
 
 
@@ -97,7 +97,7 @@ public class CallLogSpout implements IRichSpout {
      */
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("from", "to", "time"));
+        outputFieldsDeclarer.declare(new Fields("from", "to", "duration"));
     }
 
     @Override
