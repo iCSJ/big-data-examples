@@ -2,9 +2,7 @@ package com.andy.hadoop.wc;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -12,7 +10,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.net.URI;
-import java.nio.file.FileSystems;
 
 /**
  * <p>
@@ -41,8 +38,8 @@ public class WcMain {
         job.setJar("/root/wc.jar");
 
         // 封装参数:本次job所要调用的Mapper实现类、Reducer实现类
-        job.setMapperClass(WordCountMapper.class);
-        job.setReducerClass(WordCountReducer.class);
+        job.setMapperClass(WcMapper.class);
+        job.setReducerClass(WcReducer.class);
 
         // 封装参数：本次job的Mapper实现类、Reducer实现类产生的结果数据的key、value类型
         job.setMapOutputKeyClass(Text.class);

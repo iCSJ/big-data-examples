@@ -14,7 +14,7 @@ import java.util.Iterator;
  * @author leone
  * @since 2018-11-21
  **/
-public class WordCountReducer extends Reducer<Text, IntWritable, Text, LongWritable> {
+public class WcReducer extends Reducer<Text, IntWritable, Text, LongWritable> {
 
     @Override
     protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
