@@ -24,7 +24,8 @@ public class LocalWcMain {
     public static void main(String[] args) throws Exception {
 
         Configuration conf = new Configuration();
-
+        // 如果要从windows系统上运行这个job提交客户端程序，则需要加这个跨平台提交的参数
+        conf.set("mapreduce.app-submission.cross-platform", "true");
         conf.set("mapred.job.tracker", "local");
         conf.set("fs.default.name", "file:///");
 

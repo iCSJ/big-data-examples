@@ -23,12 +23,10 @@ public class WcMain {
 
         Configuration conf = new Configuration();
         // 设置job运行时要访问的默认文件系统
-//        conf.set("fs.defaultFS", "hdfs://node-1:9000");
+        conf.set("fs.defaultFS", "hdfs://node-1:9000");
         // 设置job提交到哪去运行
-//        conf.set("mapreduce.framework.name", "yarn");
-//        conf.set("yarn.resourcemanager.hostname", "node-1");
-        // 如果要从windows系统上运行这个job提交客户端程序，则需要加这个跨平台提交的参数
-//        conf.set("mapreduce.app-submission.cross-platform", "true");
+        conf.set("mapreduce.framework.name", "yarn");
+        conf.set("yarn.resourcemanager.hostname", "node-1");
 
 
         Job job = Job.getInstance();
@@ -50,8 +48,12 @@ public class WcMain {
         job.setOutputValueClass(IntWritable.class);
 
 
-        // 设置这个作业输出结果的路径
+        // 设置这个作业输出结果的路径如果 存在就删除
         Path output = new Path(args[1]);
+        FileSystem fileSystem = output.getFileSystem(conf);
+        if (fileSystem.exists(output)) {
+            fileSystem.delete(output, true);
+        }
 
         FileSystem fs = FileSystem.get(new URI("hdfs://node-1:9000"), conf, "root");
         if (fs.exists(output)) {
@@ -67,7 +69,6 @@ public class WcMain {
 
         // 执行作业
         System.exit(job.waitForCompletion(true) ? 0 : 1);
-
     }
 
 }

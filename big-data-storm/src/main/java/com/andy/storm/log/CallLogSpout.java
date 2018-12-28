@@ -31,7 +31,7 @@ public class CallLogSpout implements IRichSpout {
 
     private Random random = new Random();
 
-    private Integer index;
+    private Integer index = 0;
 
     @Override
     public void open(Map map, TopologyContext context, SpoutOutputCollector spoutOutputCollector) {
@@ -58,7 +58,6 @@ public class CallLogSpout implements IRichSpout {
 
                 Integer duration = random.nextInt(4);
                 this.collector.emit(new Values(fromPhoneNumber, toPhoneNumber, duration));
-                System.out.println(fromPhoneNumber + ":" + toPhoneNumber);
             }
 
 

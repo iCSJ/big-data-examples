@@ -6,6 +6,8 @@ import org.apache.storm.StormSubmitter;
 import org.apache.storm.topology.TopologyBuilder;
 import org.apache.storm.tuple.Fields;
 
+import java.util.Objects;
+
 /**
  * <p>
  *
@@ -20,18 +22,25 @@ public class CallLogMain {
 
         builder.setSpout("spout", new CallLogSpout());
         builder.setBolt("creator-bolt", new CallLogCreatorBolt()).shuffleGrouping("spout");
-        builder.setBolt("counter-bolt", new CallLogCounterBolt()).fieldsGrouping("call-log-creator", new Fields("call"));
-
-        LocalCluster localCluster = new LocalCluster();
+        builder.setBolt("counter-bolt", new CallLogCounterBolt()).fieldsGrouping("creator-bolt", new Fields("call"));
 
         Config config = new Config();
         config.setDebug(true);
 
-//        localCluster.submitTopology("logAnalyserStorm", config, builder.createTopology());
-//        Thread.sleep(10000);
-//        localCluster.shutdown();
+        // storm的运行模式有两种：本地模式和分布式模式
+        if (Objects.nonNull(args) && args.length > 0) {
+            config.setNumWorkers(3);
+            // 向集群提交topology
+            StormSubmitter.submitTopologyWithProgressBar(args[0], config, builder.createTopology());
+        } else {
+            LocalCluster localCluster = new LocalCluster();
+            localCluster.submitTopology("logAnalyserStorm", config, builder.createTopology());
+            config.setMaxTaskParallelism(3);
 
-        StormSubmitter.submitTopology("top", config, builder.createTopology());
+            Thread.sleep(10000);
+            localCluster.shutdown();
+        }
+
     }
 
 }
