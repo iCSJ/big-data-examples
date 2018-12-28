@@ -30,13 +30,14 @@ public class CallLogMain {
         // storm的运行模式有两种：本地模式和分布式模式
         if (Objects.nonNull(args) && args.length > 0) {
             config.setNumWorkers(3);
-            // 向集群提交topology
+            // [集群模式] 注意后面一定要跟上任务的名称
+            // $STORM_HOME/bin/storm jar xxx.jar com.xxx.xxx.log.TopologyMain call-log
             StormSubmitter.submitTopologyWithProgressBar(args[0], config, builder.createTopology());
         } else {
+            // [本地模式]
             LocalCluster localCluster = new LocalCluster();
-            localCluster.submitTopology("logAnalyserStorm", config, builder.createTopology());
+            localCluster.submitTopology("call-log", config, builder.createTopology());
             config.setMaxTaskParallelism(3);
-
             Thread.sleep(10000);
             localCluster.shutdown();
         }

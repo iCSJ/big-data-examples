@@ -1,6 +1,6 @@
 package com.andy.hadoop.flow;
 
-import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.io.Writable;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -12,7 +12,7 @@ import java.io.IOException;
  * @author leone
  * @since 2018-12-27
  **/
-public class Flow implements WritableComparable<Flow> {
+public class Flow implements Writable {
 
     private long upFlow;
 
@@ -24,6 +24,9 @@ public class Flow implements WritableComparable<Flow> {
         this.upFlow = upFlow;
         this.downFlow = downFlow;
         this.sumFlow = upFlow + downFlow;
+    }
+
+    public Flow() {
     }
 
     @Override
@@ -40,7 +43,7 @@ public class Flow implements WritableComparable<Flow> {
         this.sumFlow = dataInput.readLong();
     }
 
-    @Override
+
     public int compareTo(Flow o) {
         return this.sumFlow > o.getSumFlow() ? -1 : 1;
     }
@@ -68,5 +71,10 @@ public class Flow implements WritableComparable<Flow> {
 
     public void setSumFlow(long sumFlow) {
         this.sumFlow = sumFlow;
+    }
+
+    @Override
+    public String toString() {
+        return "upFlow=" + upFlow + "\t\t downFlow=" + downFlow + "\t\t sumFlow=" + sumFlow;
     }
 }
