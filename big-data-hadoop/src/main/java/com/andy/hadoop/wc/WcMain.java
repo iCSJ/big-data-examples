@@ -30,7 +30,7 @@ public class WcMain {
 
 
         Job job = Job.getInstance();
-        // 设置运行/处理该作业的类
+        // 设置运行处理该作业的类
         job.setJarByClass(WcMain.class);
         job.setJobName("WordCount");
         job.setJar("/root/wc.jar");
