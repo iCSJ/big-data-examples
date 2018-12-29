@@ -1,5 +1,6 @@
 package com.andy.storm.wc;
 
+import com.andy.storm.util.CommonUtil;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
@@ -16,13 +17,17 @@ import java.util.Map;
  * @author leone
  * @since 2018-12-26
  **/
-public class MySplitBolt extends BaseRichBolt {
+public class WcSplitBolt extends BaseRichBolt {
 
     private OutputCollector outputCollector;
 
+    private TopologyContext context;
+
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
+        CommonUtil.sendToClient(this, "prepare()", 7777);
         this.outputCollector = outputCollector;
+        this.context = topologyContext;
     }
 
     /**
@@ -32,15 +37,14 @@ public class MySplitBolt extends BaseRichBolt {
      */
     @Override
     public void execute(Tuple tuple) {
-        String line = tuple.getString(0);
-        String[] arr = line.split(" ");
-        for (int i = 0; i < arr.length; i++) {
-            outputCollector.emit(new Values(arr[i], 1));
+        String[] lines = tuple.toString().split(" ");
+        for (int i = 0; i < lines.length; i++) {
+            outputCollector.emit(new Values(lines[i], 1));
         }
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("word", "num"));
+        outputFieldsDeclarer.declare(new Fields("word", "count"));
     }
 }
