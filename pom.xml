@@ -20,6 +20,7 @@
         <module>big-data-hbase</module>
         <module>big-data-redis</module>
         <module>big-data-storm</module>
+        <module>big-data-crawler</module>
     </modules>
 
     <build>
