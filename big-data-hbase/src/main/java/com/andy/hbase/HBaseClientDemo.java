@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -19,38 +20,66 @@ import org.junit.Test;
 public class HBaseClientDemo {
 
 
+    private Connection conn;
+
+    @Before
+    public void init() throws Exception {
+        // 创建连接对象,会自动加载HBase配置文件
+        Configuration conf = HBaseConfiguration.create();
+        conf.set("hbase.zookeeper.quorum", "node-2:2181,node-3:2181,node-4:2181");
+        conn = ConnectionFactory.createConnection(conf);
+    }
+
+
     /**
-     * 创建表
+     * DDL操作
      *
      * @throws Exception
      */
     @Test
-    public void testCreateTable() throws Exception {
-        Configuration conf = HBaseConfiguration.create();
-
-        Connection conn = ConnectionFactory.createConnection(conf);
-
+    public void createTableTest() throws Exception {
+        // 创建ddl描述对象
         Admin admin = conn.getAdmin();
 
+        // 创建表描述对象
         HTableDescriptor hTableDescriptor = new HTableDescriptor(TableName.valueOf("user_info"));
-        HColumnDescriptor hColumnDescriptor = new HColumnDescriptor("base_info");
-        hColumnDescriptor.setMaxVersions(3);
 
-        HColumnDescriptor hColumnDescriptor1 = new HColumnDescriptor("extra_info");
+        // 创建列簇描述对象
+        HColumnDescriptor hColumnDescriptor1 = new HColumnDescriptor("base_info");
+        // 设置保存数据的最大半本数量是3
+        hColumnDescriptor1.setMaxVersions(3);
+
+        HColumnDescriptor hColumnDescriptor2 = new HColumnDescriptor("extra_info");
 
 
-        hTableDescriptor.addFamily(hColumnDescriptor);
         hTableDescriptor.addFamily(hColumnDescriptor1);
+        hTableDescriptor.addFamily(hColumnDescriptor2);
 
         admin.createTable(hTableDescriptor);
 
         admin.close();
+        conn.close();
     }
 
 
+    /**
+     * DML 删除表
+     */
+    @Test
+    public void dropTableTest() throws Exception {
+        // 创建ddl描述对象
+        Admin admin = conn.getAdmin();
 
+        // 先停用表
+        admin.disableTable(TableName.valueOf("user_info"));
 
+        // 再删除表
+        admin.deleteTable(TableName.valueOf("user_info"));
 
+        admin.close();
+        conn.close();
+
+    }
 
 
 }
