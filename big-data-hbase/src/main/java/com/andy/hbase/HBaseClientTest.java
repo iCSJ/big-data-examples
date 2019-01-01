@@ -8,6 +8,7 @@ import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.regionserver.BloomType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ import org.junit.Test;
  * @author leone
  * @since 2018-12-16
  **/
-public class HBaseClientDemo {
+public class HBaseClientTest {
 
 
     private Connection conn;
@@ -79,6 +80,53 @@ public class HBaseClientDemo {
         admin.close();
         conn.close();
 
+    }
+
+
+    @Test
+    public void alterTableTest() throws Exception {
+        // 创建ddl描述对象
+        Admin admin = conn.getAdmin();
+
+        // 取出旧的的表的描述信息
+        HTableDescriptor user_info = admin.getTableDescriptor(TableName.valueOf("user_info"));
+
+        HColumnDescriptor hColumnDescriptor = new HColumnDescriptor("other_info");
+        // 设置布隆过滤器
+        hColumnDescriptor.setBloomFilterType(BloomType.ROWCOL);
+
+        user_info.addFamily(hColumnDescriptor);
+
+        admin.modifyTable(TableName.valueOf("user_info"), user_info);
+
+        admin.close();
+        conn.close();
+    }
+
+
+    /**
+     * DML 操作HBase测试
+     *
+     * @throws Exception
+     */
+    @Test
+    public void insertTest() throws Exception {
+        // 创建ddl描述对象
+        Admin admin = conn.getAdmin();
+
+        // 取出旧的的表的描述信息
+        HTableDescriptor user_info = admin.getTableDescriptor(TableName.valueOf("user_info"));
+
+        HColumnDescriptor hColumnDescriptor = new HColumnDescriptor("other_info");
+        // 设置布隆过滤器
+        hColumnDescriptor.setBloomFilterType(BloomType.ROWCOL);
+
+        user_info.addFamily(hColumnDescriptor);
+
+        admin.modifyTable(TableName.valueOf("user_info"), user_info);
+
+        admin.close();
+        conn.close();
     }
 
 
