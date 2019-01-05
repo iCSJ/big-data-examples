@@ -17,6 +17,16 @@ import java.sql.Statement;
 public class HiveClientTest {
 
 
+    /**
+     * 1,123.25.51.81,https://www.google.com,2019-01-21
+     * 2,123.25.51.82,https://www.youku.com,2019-01-22
+     * 3,123.25.51.83,https://www.taobao.com,2019-01-23
+     * 4,123.25.51.84,https://www.baidu.com,2019-01-24
+     * 5,123.25.51.85,https://www.jd.com,2019-01-26
+     * 6,123.25.51.86,https://www.tianmao.com,2019-01-27
+     */
+
+
     private Connection connection;
 
     private Statement statement;
@@ -83,7 +93,8 @@ public class HiveClientTest {
      */
     @Test
     public void createTableTest() throws Exception {
-        String sql = "create table t_log(id int, ip string, url string, time string) row format delimited fields terminated by ','";
+        String sql = "create table t_log(id int, ip string, url string, time string)" +
+                " row format delimited fields terminated by ','";
         boolean flag = statement.execute(sql);
         System.out.println("running sql:" + sql + (flag ? " " : "failed success"));
     }
@@ -133,6 +144,5 @@ public class HiveClientTest {
         boolean flag = statement.execute(sql);
         System.out.println("running sql:" + sql + (flag ? " " : "failed success"));
     }
-
 
 }
