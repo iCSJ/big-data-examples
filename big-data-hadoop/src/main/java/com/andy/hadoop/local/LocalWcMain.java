@@ -6,6 +6,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.CombineFileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.CombineTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
@@ -17,7 +19,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
  **/
 public class LocalWcMain {
 
-    private static String inputPath = "E:\\tmp\\hadoop\\input\\words.txt";
+    private static String inputPath = "E:\\tmp\\hadoop\\input";
 
     private static String outputPath = "E:\\tmp\\hadoop\\output";
 
@@ -32,6 +34,12 @@ public class LocalWcMain {
         Job job = Job.getInstance(conf);
 
         job.setJarByClass(LocalWcMain.class);
+
+
+        // 设置 job 的inputFormat 如果不设置默认是 TextInputFormat
+//        job.setInputFormatClass(CombineFileInputFormat.class);
+//        CombineTextInputFormat.setMaxInputSplitSize(job, 4194304);
+//        CombineTextInputFormat.setMinInputSplitSize(job, 2097152);
 
         job.setMapperClass(WcLocalMapper.class);
         job.setReducerClass(WcLocalReducer.class);

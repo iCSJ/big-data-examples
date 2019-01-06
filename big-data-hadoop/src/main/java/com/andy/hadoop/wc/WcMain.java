@@ -6,6 +6,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.CombineFileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.CombineTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
@@ -34,6 +36,16 @@ public class WcMain {
         job.setJarByClass(WcMain.class);
         job.setJobName("WordCount");
         job.setJar("/root/wc.jar");
+
+        // 设置 job 的 combiner
+        job.setCombinerClass(WcCombiner.class);
+
+        // 设置 job 的inputFormat 如果不设置默认是 TextInputFormat
+//        job.setInputFormatClass(CombineFileInputFormat.class);
+//        CombineTextInputFormat.setMaxInputSplitSize(job, 4194304);
+//        CombineTextInputFormat.setMinInputSplitSize(job, 2097152);
+
+
 
         // 封装参数:本次job所要调用的Mapper实现类、Reducer实现类
         job.setMapperClass(WcMapper.class);
