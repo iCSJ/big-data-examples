@@ -28,6 +28,9 @@ public class JoinBean implements Writable {
 
     private float price;
 
+    /**
+     * 标记为订单还是商品的bean
+     */
     private String flag;
 
     public void set(int orderId, String createTime, String productId, int amount, String name, int categoryId, float price, String flag) {

@@ -19,7 +19,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
  **/
 public class LocalWcMain {
 
-    private static String inputPath = "E:\\tmp\\hadoop\\input";
+    private static String inputPath = "E:\\tmp\\hadoop\\input\\a.txt";
 
     private static String outputPath = "E:\\tmp\\hadoop\\output";
 
