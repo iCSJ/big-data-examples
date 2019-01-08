@@ -1,4 +1,4 @@
-package com.andy.hadoop.local;
+package com.andy.hadoop.mr.local;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;

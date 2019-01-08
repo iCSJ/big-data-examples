@@ -1,4 +1,4 @@
-package com.andy.hadoop.join;
+package com.andy.hadoop.mr.join;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.hadoop.conf.Configuration;

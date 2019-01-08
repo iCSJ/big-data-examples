@@ -1,7 +1,7 @@
-package com.andy.hadoop.join.side;
+package com.andy.hadoop.mr.join.side;
 
-import com.andy.hadoop.join.JoinBean;
-import com.andy.hadoop.join.JoinMain;
+import com.andy.hadoop.mr.join.JoinBean;
+import com.andy.hadoop.mr.join.JoinMain;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;

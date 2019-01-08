@@ -1,4 +1,4 @@
-package com.andy.hadoop.friend;
+package com.andy.hadoop.mr.friend;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -12,7 +12,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * <p>
@@ -20,29 +19,21 @@ import java.util.Arrays;
  * @author leone
  * @since 2019-01-07
  **/
-public class FriendMainTwo {
+public class FriendMainOne {
 
 
     /**
      * mapper 业务逻辑
      */
-    static class FriendMapperTwo extends Mapper<LongWritable, Text, Text, Text> {
+    static class FriendMapperOne extends Mapper<LongWritable, Text, Text, Text> {
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-            // 得到上一步输处的结果
-            String[] person_friend = value.toString().split("\t");
-
-            String friend = person_friend[0];
-            String[] person = person_friend[1].split(",");
-
-            Arrays.sort(person);
-
-            for (int i = 0; i < person.length - 2; i++) {
-                for (int j = 0; j < person.length - 1; j++) {
-                    context.write(new Text(person[i] + "-" + person[j]), new Text(friend));
-                }
+            String[] person_friend = value.toString().split(":");
+            System.out.println(value.toString());
+            for (String friend : person_friend[1].split(",")) {
+                // 输出(好友，人)
+                context.write(new Text(friend), new Text(person_friend[0]));
             }
-
         }
     }
 
@@ -50,12 +41,12 @@ public class FriendMainTwo {
     /**
      * reducer业务逻辑
      */
-    static class FriendReducerTwo extends Reducer<Text, Text, Text, Text> {
+    static class FriendReducerOne extends Reducer<Text, Text, Text, Text> {
         @Override
         protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
             StringBuilder sb = new StringBuilder();
-            for (Text friend : values) {
-                sb.append(friend).append(" ");
+            for (Text person : values) {
+                sb.append(person).append(",");
             }
             context.write(key, new Text(sb.toString()));
         }
@@ -67,10 +58,10 @@ public class FriendMainTwo {
 
         Job job = Job.getInstance(conf);
 
-        job.setJarByClass(FriendMainTwo.class);
+        job.setJarByClass(FriendMainOne.class);
 
-        job.setMapperClass(FriendMapperTwo.class);
-        job.setReducerClass(FriendReducerTwo.class);
+        job.setMapperClass(FriendMapperOne.class);
+        job.setReducerClass(FriendReducerOne.class);
 
 
         job.setOutputValueClass(Text.class);

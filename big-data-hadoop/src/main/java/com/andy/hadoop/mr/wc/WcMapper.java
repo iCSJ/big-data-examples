@@ -1,4 +1,4 @@
-package com.andy.hadoop.wc;
+package com.andy.hadoop.mr.wc;
 
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;

@@ -1,4 +1,4 @@
-package com.andy.hadoop.index;
+package com.andy.hadoop.mr.index;
 
 
 import org.apache.hadoop.conf.Configuration;
@@ -11,7 +11,6 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
@@ -22,22 +21,17 @@ import java.io.IOException;
  * @author leone
  * @since 2019-01-06
  **/
-public class InvertedIndexMainOne {
+public class InvertedIndexMainTwo {
 
-    static class InvertedIndexMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+    static class InvertedIndexMapperTwo extends Mapper<LongWritable, Text, Text, Text> {
         Text text = new Text();
         IntWritable intWritable = new IntWritable(1);
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             String line = value.toString();
-            String[] words = line.split(" ");
-            FileSplit inputSplit = (FileSplit) context.getInputSplit();
-            String name = inputSplit.getPath().getName();
-            for (String word : words) {
-                text.set(word + "--" + name);
-                context.write(text, intWritable);
-            }
+            String[] words_file = line.split("--");
+            context.write(new Text(words_file[0]), new Text(words_file[1]));
         }
 
     }
@@ -46,14 +40,15 @@ public class InvertedIndexMainOne {
     /**
      * reduce业务逻辑
      */
-    static class InvertedIndexReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+    static class InvertedIndexReducerTwo extends Reducer<Text, Text, Text, Text> {
         @Override
-        protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-            int count = 0;
-            for (IntWritable value : values) {
-                count += value.get();
+        protected void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+            StringBuilder sb = new StringBuilder();
+            for (Text value : values) {
+                sb.append(value.toString()).append("\t");
             }
-            context.write(key, new IntWritable(count));
+            System.out.println(sb.toString());
+            context.write(key, new Text(sb.toString()));
         }
     }
 
@@ -61,13 +56,13 @@ public class InvertedIndexMainOne {
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf);
 
-        job.setJarByClass(InvertedIndexMainOne.class);
+        job.setJarByClass(InvertedIndexMainTwo.class);
 
-        job.setMapperClass(InvertedIndexMapper.class);
-        job.setReducerClass(InvertedIndexReducer.class);
+        job.setMapperClass(InvertedIndexMapperTwo.class);
+        job.setReducerClass(InvertedIndexReducerTwo.class);
 
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
+        job.setOutputValueClass(Text.class);
 
         FileInputFormat.setInputPaths(job, new Path(args[0]));
 

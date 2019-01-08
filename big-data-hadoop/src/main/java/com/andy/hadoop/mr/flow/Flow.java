@@ -1,4 +1,4 @@
-package com.andy.hadoop.flow;
+package com.andy.hadoop.mr.flow;
 
 import org.apache.hadoop.io.Writable;
 

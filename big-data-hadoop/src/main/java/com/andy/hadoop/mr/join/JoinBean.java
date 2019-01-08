@@ -1,4 +1,4 @@
-package com.andy.hadoop.join;
+package com.andy.hadoop.mr.join;
 
 import org.apache.hadoop.io.Writable;
 

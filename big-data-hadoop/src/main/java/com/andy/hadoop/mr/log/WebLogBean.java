@@ -1,4 +1,4 @@
-package com.andy.hadoop.log;
+package com.andy.hadoop.mr.log;
 
 /**
  * <p>
