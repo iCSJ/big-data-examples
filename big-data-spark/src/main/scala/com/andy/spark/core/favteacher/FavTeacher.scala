@@ -1,4 +1,4 @@
-package com.andy.spark.favteacher
+package com.andy.spark.core.favteacher
 
 import java.net.URL
 

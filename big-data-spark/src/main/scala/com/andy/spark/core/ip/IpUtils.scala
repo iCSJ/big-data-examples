@@ -1,4 +1,4 @@
-package com.andy.spark.ip
+package com.andy.spark.core.ip
 
 import scala.io.{BufferedSource, Source}
 

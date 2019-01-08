@@ -1,4 +1,4 @@
-package com.andy.spark.dataset
+package com.andy.spark.sql.dataset
 
 import org.apache.spark.sql.{DataFrame, SparkSession}
 
@@ -57,12 +57,12 @@ object JdbcDataSource {
     //    val filter: DataFrame = json.where($"age" <= 300)
     //    filter.show()
 
-    /*val csv: DataFrame = sprak.read.csv("E:\\tmp\\spark\\csv")
-    val pdf: DataFrame = csv.toDF("id", "name", "age")
-    csv.show()*/
+    //    val csv: DataFrame = sprak.read.csv("E:\\tmp\\spark\\csv")
+    //    val pdf: DataFrame = csv.toDF("id", "name", "age")
+    //    csv.show()
 
-        val parquet: DataFrame = sprak.read.parquet("E:\\tmp\\spark\\parquet")
-        parquet.show()
+    val parquet: DataFrame = sprak.read.parquet("E:\\tmp\\spark\\parquet")
+    parquet.show()
 
 
     sprak.close()

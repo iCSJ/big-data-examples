@@ -1,4 +1,4 @@
-package com.andy.spark.steaming
+package com.andy.spark.streaming
 
 import org.apache.spark.SparkConf
 import org.apache.spark.streaming.{Duration, StreamingContext}

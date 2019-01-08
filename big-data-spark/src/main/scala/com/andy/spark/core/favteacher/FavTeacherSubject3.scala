@@ -1,9 +1,9 @@
-package com.andy.spark.favteacher
+package com.andy.spark.core.favteacher
 
 import java.net.URL
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.{Partitioner, SparkConf, SparkContext}
 
 /**
   * <p> 统计最受欢迎的老师
@@ -11,7 +11,7 @@ import org.apache.spark.{SparkConf, SparkContext}
   * @author leone
   * @since 2018-12-08
   **/
-object FavTeacherSubject {
+object FavTeacherSubject3 {
 
   def main(args: Array[String]): Unit = {
 
@@ -29,20 +29,21 @@ object FavTeacherSubject {
       ((subject, teacher), 1)
     })
 
-    //    val map: RDD[((String, String), Int)] = subjectAndTeacher.map((_, 1))
-
     val reduced: RDD[((String, String), Int)] = subjectAndTeacher.reduceByKey(_ + _)
 
-    val grouped: RDD[(String, Iterable[((String, String), Int)])] = reduced.groupBy(_._1._1)
-
-    val sorted = grouped.mapValues(_.toList.sortBy(_._2).reverse.take(3))
-
-    val result: Array[(String, List[((String, String), Int)])] = sorted.collect()
-
-    println(result.toBuffer)
+    //    reduced.partitionBy()/
 
     sc.stop()
   }
 
+
+}
+
+
+class SubjectParitioner extends Partitioner {
+
+  override def numPartitions: Int = ???
+
+  override def getPartition(key: Any): Int = ???
 
 }
