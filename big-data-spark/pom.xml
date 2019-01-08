@@ -51,6 +51,20 @@
             <version>${spark.version}</version>
         </dependency>
 
+        <!--spark 整合hive的依赖-->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-hive_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
+        <!--spark 整合kafka-->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming-kafka-0-10_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
         <!-- 指定hadoop-client API的版本 -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
