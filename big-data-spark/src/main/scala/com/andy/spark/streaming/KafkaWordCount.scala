@@ -18,14 +18,12 @@ object KafkaWordCount {
     // 设置批次产生的时间间隔
     val ssc = new StreamingContext(new SparkConf().setAppName("kafka-steaming").setMaster("local[2]"), Milliseconds(5000))
 
-    var topic = Map[String, Int]("order" -> 1)
-    var groupId = "group-1"
-    val brokerList = "node-2:9093,node-3:9092,node-4:9092"
-
+    val topic = Map[String, Int]("order" -> 1)
+    val groupId = "group-1"
     val zkList = "node-2:2181,node-3:2181,node-4:2181"
 
     // 创建DStream
-    val data = KafkaUtils.createStream(ssc, zkList, groupId, topic).map(_._2)
+    val data: DStream[String] = KafkaUtils.createStream(ssc, zkList, groupId, topic).map(_._2)
 
     val words = data.flatMap(_.split(" "))
     val counts = words.map((_, 1L)).reduceByKey(_ + _)
