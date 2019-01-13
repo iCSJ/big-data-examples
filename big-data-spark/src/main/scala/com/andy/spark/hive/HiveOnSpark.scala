@@ -27,10 +27,7 @@ object HiveOnSpark {
     val result: DataFrame = spark.sql("create table t_test(id bigint, name string)")
     result.show()
 
-
     spark.close()
-
-
   }
 
 }

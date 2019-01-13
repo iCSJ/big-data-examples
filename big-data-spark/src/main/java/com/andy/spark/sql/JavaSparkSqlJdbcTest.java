@@ -5,6 +5,8 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
+import java.util.Properties;
+
 /**
  * <p> spark jdbc 查询数据库
  *
@@ -31,7 +33,13 @@ public class JavaSparkSqlJdbcTest {
         df.show();
 
 
-        df.select(new Column("id"), new Column("name")).show();
+        df.select(new Column("id"), new Column("name")).where("name like 'andy'").distinct().show();
+
+        Properties prop = new Properties();
+        prop.put("user", "root");
+        prop.put("password", "root");
+        prop.put("driver", "com.mysql.jdbc.Driver");
+        df.write().jdbc("jdbc:mysql://localhost:3306/spark?useSSL=false", "t_logs_1", prop);
 
         spark.close();
 
