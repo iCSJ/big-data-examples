@@ -32,7 +32,6 @@ public class JavaSparkSqlJdbcTest {
 
         df.show();
 
-
         df.select(new Column("id"), new Column("name")).where("name like 'andy'").distinct().show();
 
         Properties prop = new Properties();

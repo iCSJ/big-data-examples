@@ -24,10 +24,8 @@ public class JavaStreamingTest {
         JavaStreamingContext sc = new JavaStreamingContext(conf, Seconds.apply(5));
         JavaReceiverInputDStream<String> stream = sc.socketTextStream("node-1", 8888);
 //        JavaDStream<Object> javaDStream = stream.flatMap((FlatMapFunction<String, Object>) s -> Arrays.asList(s.split(" ")).iterator());
-
 //        javaDStream.mapToPair((PairFunction<String, String, Integer>) o -> new Tuple2<String, Integer>(o, 1));
-
-
     }
+
 
 }
