@@ -11,11 +11,14 @@ object ScalaSparkMlLitTest {
   def main(args: Array[String]): Unit = {
 
     // 模型文件
-    val dataDir = "E:/tmp/spark/ml/wineQuality-write.csv"
+    //val dataDir = "E:/tmp/spark/ml/wineQuality-write.csv"
+
+
 
 
 
     case class Wine()
+
 
   }
 
