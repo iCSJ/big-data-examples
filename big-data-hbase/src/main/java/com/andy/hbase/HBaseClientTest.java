@@ -5,13 +5,15 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.client.Admin;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.regionserver.BloomType;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p> HBase crud
@@ -22,7 +24,11 @@ import java.util.Arrays;
 public class HBaseClientTest {
 
 
+    private static final Logger logger = LoggerFactory.getLogger(HBaseCrudTest.class);
+
     private Connection conn;
+
+    private Admin admin;
 
     private String tableName = "t_person";
 
@@ -38,32 +44,32 @@ public class HBaseClientTest {
         Configuration conf = HBaseConfiguration.create();
         conf.set("hbase.zookeeper.quorum", "node-2:2181,node-3:2181,node-4:2181");
         conn = ConnectionFactory.createConnection(conf);
+        // 创建ddl描述对象
+        admin = conn.getAdmin();
     }
 
     /**
-     * DDL操作
+     * 创建表
+     * create 't_person','f1','f2','f3'
      *
      * @throws Exception
      */
     @Test
     public void createTableTest() throws Exception {
-        // 创建ddl描述对象
-        Admin admin = conn.getAdmin();
-
         // 创建表描述对象
-        HTableDescriptor hTableDescriptor = new HTableDescriptor(TableName.valueOf(tableName));
+        HTableDescriptor table = new HTableDescriptor(TableName.valueOf(tableName));
 
         // 创建列簇描述对象
-        HColumnDescriptor hColumnDescriptor1 = new HColumnDescriptor(f1);
+        HColumnDescriptor column1 = new HColumnDescriptor(f1);
         // 设置保存数据的最大半本数量是3
-        hColumnDescriptor1.setMaxVersions(3);
+        column1.setMaxVersions(3);
 
-        HColumnDescriptor hColumnDescriptor2 = new HColumnDescriptor(f2);
+        HColumnDescriptor column2 = new HColumnDescriptor(f2);
 
-        hTableDescriptor.addFamily(hColumnDescriptor1);
-        hTableDescriptor.addFamily(hColumnDescriptor2);
+        table.addFamily(column1);
+        table.addFamily(column2);
 
-        admin.createTable(hTableDescriptor);
+        admin.createTable(table);
 
         admin.close();
         conn.close();
@@ -71,13 +77,14 @@ public class HBaseClientTest {
 
 
     /**
-     * DML 删除表
+     * 删除表
+     * disable 't_person'
+     * drop 't_person'
+     *
+     * @throws Exception
      */
     @Test
     public void dropTableTest() throws Exception {
-        // 创建ddl描述对象
-        Admin admin = conn.getAdmin();
-
         // 先停用表
         admin.disableTable(TableName.valueOf(tableName));
 
@@ -90,71 +97,44 @@ public class HBaseClientTest {
 
 
     /**
-     * 修改表
+     * 修改表添加列簇
+     * alter 't_person','f4'
      *
      * @throws Exception
      */
     @Test
-    public void alterTableTest() throws Exception {
-        // 创建ddl描述对象
-        Admin admin = conn.getAdmin();
-
+    public void modifyTableTest() throws Exception {
         // 取出旧的的表的描述信息
-        HTableDescriptor user_info = admin.getTableDescriptor(TableName.valueOf(tableName));
+        HTableDescriptor table = admin.getTableDescriptor(TableName.valueOf(tableName));
 
-        HColumnDescriptor hColumnDescriptor = new HColumnDescriptor(f3);
+        HColumnDescriptor column = new HColumnDescriptor(f3);
         // 设置布隆过滤器
-        hColumnDescriptor.setBloomFilterType(BloomType.ROWCOL);
+        column.setBloomFilterType(BloomType.ROWCOL);
 
-        user_info.addFamily(hColumnDescriptor);
+        table.addFamily(column);
 
-        admin.modifyTable(TableName.valueOf(f3), user_info);
+        admin.modifyTable(TableName.valueOf(tableName), table);
 
         admin.close();
         conn.close();
     }
 
-
     /**
-     * DML 操作HBase测试
+     * 查看表定义信息
+     * desc 't_person'
      *
      * @throws Exception
      */
     @Test
-    public void insertTest() throws Exception {
-        // 创建ddl描述对象
-        Admin admin = conn.getAdmin();
-
-        // 取出旧的的表的描述信息
-        HTableDescriptor hTableDescriptor = admin.getTableDescriptor(TableName.valueOf(tableName));
-
-        HColumnDescriptor hColumnDescriptor = new HColumnDescriptor(f1);
-        // 设置布隆过滤器
-        hColumnDescriptor.setBloomFilterType(BloomType.ROWCOL);
-
-        hTableDescriptor.addFamily(hColumnDescriptor);
-
-        admin.modifyTable(TableName.valueOf(tableName), hTableDescriptor);
-
+    public void descTableTest() throws Exception {
+        HTableDescriptor table = admin.getTableDescriptor(TableName.valueOf(tableName));
+        HColumnDescriptor[] columnFamilies = table.getColumnFamilies();
+        for (HColumnDescriptor hcd : columnFamilies) {
+            logger.info("HColumn: {}", Bytes.toString(hcd.getName()));
+        }
         admin.close();
         conn.close();
     }
-
-
-    /**
-     * @throws Exception
-     */
-    @Test
-    public void getRow() throws Exception {
-        Table table = conn.getTable(TableName.valueOf(tableName));
-        Get get = new Get(Bytes.toBytes("r1"));
-        Result result = table.get(get);
-        System.out.println(Arrays.toString(result.getRow()));
-        table.close();
-        conn.close();
-    }
-
-
 
 
 }
