@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p> HBase crud
+ * <p> HBase ddl
  *
  * @author leone
  * @since 2018-12-16

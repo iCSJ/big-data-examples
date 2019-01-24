@@ -53,8 +53,13 @@ public class HBaseCrudTest {
         Table table = conn.getTable(TableName.valueOf(tableName));
         List<Put> rows = new ArrayList<>();
 
+        /**
+         * 0 代表前面补充0
+         * 4 代表长度为4
+         * d 代表参数为正数型
+         */
         for (int i = 1; i <= 20; i++) {
-            Put row = new Put(Bytes.toBytes(String.valueOf(i)));
+            Put row = new Put(Bytes.toBytes(String.format("%04d", i)));
             row.addColumn(Bytes.toBytes(f1), Bytes.toBytes("name"), Bytes.toBytes(RandomValue.getName()));
             row.addColumn(Bytes.toBytes(f1), Bytes.toBytes("age"), Bytes.toBytes(String.valueOf(RandomValue.getNumber(50))));
             row.addColumn(Bytes.toBytes(f2), Bytes.toBytes("address"), Bytes.toBytes(RandomValue.getAddress()));
@@ -76,9 +81,9 @@ public class HBaseCrudTest {
         // 获取指定表对象，进行dml操作
         Table table = conn.getTable(TableName.valueOf(tableName));
 
-        Delete delete1 = new Delete(Bytes.toBytes("0"));
+        Delete delete1 = new Delete(Bytes.toBytes(String.format("%04d", 1)));
 
-        Delete delete2 = new Delete(Bytes.toBytes("1"));
+        Delete delete2 = new Delete(Bytes.toBytes(String.format("%04d", 2)));
         delete2.addColumn(Bytes.toBytes(f1), Bytes.toBytes("name"));
 
         List<Delete> deleteList = new ArrayList<>();
@@ -102,7 +107,7 @@ public class HBaseCrudTest {
         // 获取指定表对象，进行dml操作
         Table table = conn.getTable(TableName.valueOf(tableName));
 
-        Delete delete = new Delete(Bytes.toBytes("3"));
+        Delete delete = new Delete(Bytes.toBytes(String.format("%04d", 3)));
 
         table.delete(delete);
 
@@ -135,7 +140,7 @@ public class HBaseCrudTest {
         Table table = conn.getTable(TableName.valueOf(tableName));
         List<Get> gets = new ArrayList<>();
         for (int i = 1; i <= 20; i++) {
-            Get get = new Get(Bytes.toBytes(String.valueOf(i)));
+            Get get = new Get(Bytes.toBytes(String.valueOf(String.format("%04d", i))));
             gets.add(get);
         }
         Result[] results = table.get(gets);
@@ -169,7 +174,7 @@ public class HBaseCrudTest {
         // 获取指定表对象，进行dml操作
         Table table = conn.getTable(TableName.valueOf(tableName));
         // 可以指定开始行键和结束行键
-        Scan scan = new Scan(Bytes.toBytes("2"), Bytes.toBytes("3"));
+        Scan scan = new Scan(Bytes.toBytes(String.format("%04d", 2)), Bytes.toBytes(String.format("%04d", 5)));
 
         ResultScanner result = table.getScanner(scan);
 
@@ -202,7 +207,7 @@ public class HBaseCrudTest {
     public void getVersionTest() throws Exception {
         HTable htable = new HTable(conf, tableName);
 
-        Get get = new Get(Bytes.toBytes("2"));
+        Get get = new Get(Bytes.toBytes(String.format("%04d", 2)));
 
         get.addColumn(Bytes.toBytes(f1), Bytes.toBytes("name"));
         get.setMaxVersions(2);
