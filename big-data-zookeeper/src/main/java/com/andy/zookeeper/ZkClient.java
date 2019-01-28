@@ -12,27 +12,27 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * ZooKeeper -server host:port cmd args
- *         stat path [watch]
- *         set path data [version]
- *         ls path [watch]
- *         delquota [-n|-b] path
- *         ls2 path [watch]
- *         setAcl path acl
- *         setquota -n|-b val path
- *         history
- *         redo cmdno
- *         printwatches on|off
- *         delete path [version]
- *         sync path
- *         listquota path
- *         rmr path
- *         get path [watch]
- *         create [-s] [-e] path data acl
- *         addauth scheme auth
- *         quit
- *         getAcl path
- *         close
- *         connect host:port
+ * stat path [watch]
+ * set path data [version]
+ * ls path [watch]
+ * delquota [-n|-b] path
+ * ls2 path [watch]
+ * setAcl path acl
+ * setquota -n|-b val path
+ * history
+ * redo cmdno
+ * printwatches on|off
+ * delete path [version]
+ * sync path
+ * listquota path
+ * rmr path
+ * get path [watch]
+ * create [-s] [-e] path data acl
+ * addauth scheme auth
+ * quit
+ * getAcl path
+ * close
+ * connect host:port
  *
  * @author leone
  * @since 2018-06-16
@@ -43,27 +43,15 @@ public class ZkClient {
 
     private final static Logger logger = LoggerFactory.getLogger(ZkClient.class);
 
-    private final static String ZK_URL = "39.108.125.41:2181";
+    private final static String ZK_URL = "xxx.xxx.xxx.xxx:2181";
 
     private final static int TIME_OUT = 5000;
 
     private static ZooKeeper zkClient = null;
 
-    public static void main(String[] args) throws Exception {
-
-    }
-
     @Before
     public void init() throws Exception {
-        zkClient = new ZooKeeper(ZK_URL, TIME_OUT, (WatchedEvent event) -> {
-            // 收到事件通知后的回调函数（应该是我们自己的事件处理逻辑）
-            logger.info(event.getType() + "---" + event.getPath());
-            try {
-                zkClient.getChildren("/", true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+        zkClient = new ZooKeeper(ZK_URL, TIME_OUT, watchedEvent -> logger.info("{}", watchedEvent));
     }
 
 
@@ -123,9 +111,9 @@ public class ZkClient {
      */
     @Test
     public void testSetData() throws Exception {
-        zkClient.setData("/eclipse", "world".getBytes(), -1);
-        byte[] data = zkClient.getData("/eclipse", false, null);
-        System.out.println(new String(data));
+        zkClient.setData("/hello", "world".getBytes(), -1);
+        byte[] data = zkClient.getData("/hello", false, null);
+        logger.info(new String(data));
     }
 
     /**
@@ -136,7 +124,7 @@ public class ZkClient {
     @Test
     public void testCreate() throws Exception {
         // 参数1：要创建的节点的路径 参数2：节点数据 参数3：节点的权限 参数4：节点的类型
-        zkClient.create("/eclipse/aaa", "aaaData".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+        zkClient.create("/hello", "jack".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
     }
 
 
@@ -148,7 +136,7 @@ public class ZkClient {
     @Test
     public void testExists() throws Exception {
         Stat stat = zkClient.exists("/eclipse", false);
-        System.out.println(stat == null ? "not exist" : "exist");
+        logger.info(stat == null ? "not exist" : "exist");
     }
 
     /**
@@ -160,7 +148,7 @@ public class ZkClient {
     public void testGetChild() throws Exception {
         List<String> children = zkClient.getChildren("/", true);
         for (String child : children) {
-            System.out.println(child);
+            logger.info(child);
         }
     }
 
@@ -184,7 +172,21 @@ public class ZkClient {
     @Test
     public void testGetDate() throws Exception {
         byte[] data = zkClient.getData("/eclipse", false, null);
-        System.out.println(new String(data));
+        logger.info(new String(data));
+    }
+
+    /**
+     * 获取节点的数据
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testWatcher() throws Exception {
+        byte[] data = zkClient.getData("/aa", watchedEvent -> logger.info("{}", watchedEvent), new Stat());
+        logger.info(new String(data));
+        while (true) {
+            Thread.sleep(1000);
+        }
     }
 
 
