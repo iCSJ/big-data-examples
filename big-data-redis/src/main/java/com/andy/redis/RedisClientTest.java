@@ -12,7 +12,7 @@ import java.util.Map;
  * @author leone
  * @since 2018-12-19
  **/
-public class RedisClient {
+public class RedisClientTest {
 
     private static final String HOST = "127.0.0.1";
 
@@ -51,7 +51,7 @@ public class RedisClient {
         config.setTimeBetweenEvictionRunsMillis(60000);
         // 当连接数耗尽，是否阻塞
         config.setBlockWhenExhausted(true);
-        // 连接池配置对象 (host + port + timeout + password + db)
+        // 连接池配置对象 (config, host + port + timeout + password + db)
         jedisPool = new JedisPool(config, HOST, PORT, TIME_OUT, null, 1);
         jedis = jedisPool.getResource();
     }
