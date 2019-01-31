@@ -3,6 +3,12 @@ package com.andy.redis;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+/**
+ * <p> 
+ *
+ * @author leone
+ * @since 2019-01-31
+ **/
 public class SubThread extends Thread {
 
     private final JedisPool jedisPool;

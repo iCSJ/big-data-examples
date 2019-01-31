@@ -7,6 +7,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * <p> 
+ *
+ * @author leone
+ * @since 2019-01-31
+ **/
 public class Publisher extends Thread {
 
     private final JedisPool jedisPool;

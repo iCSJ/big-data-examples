@@ -2,6 +2,12 @@ package com.andy.redis;
 
 import redis.clients.jedis.JedisPubSub;
 
+/**
+ * <p> 
+ *
+ * @author leone
+ * @since 2019-01-31
+ **/
 public class Subscriber extends JedisPubSub {
 
     /**
