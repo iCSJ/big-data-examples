@@ -1,4 +1,4 @@
-package com.andy.spark.core;
+package com.andy.spark.core.rdd;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;

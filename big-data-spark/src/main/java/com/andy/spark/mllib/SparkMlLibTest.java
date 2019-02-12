@@ -1,4 +1,4 @@
-package com.andy.spark.ml;
+package com.andy.spark.mllib;
 
 /**
  * <p>
