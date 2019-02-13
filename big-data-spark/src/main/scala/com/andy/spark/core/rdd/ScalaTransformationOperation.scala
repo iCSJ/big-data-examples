@@ -11,12 +11,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 object ScalaTransformationOperation {
 
   def main(args: Array[String]): Unit = {
-    //    map()
-    //    filter()
-    //    flatMap();
-    //        groupByKey();
     reduceByKey();
-    //    sortByKey();
   }
 
   /**

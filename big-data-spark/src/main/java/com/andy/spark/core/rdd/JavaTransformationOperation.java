@@ -8,6 +8,7 @@ import org.apache.spark.api.java.function.FlatMapFunction;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.VoidFunction;
+import org.junit.Test;
 import scala.Tuple2;
 
 import java.util.Arrays;
@@ -21,14 +22,12 @@ import java.util.List;
  **/
 public class JavaTransformationOperation {
 
-    public static void main(String[] args) {
-//        map();
-//        filter();
-//        flatMap();
-//        groupByKey();
-//        reduceByKey();
-//        sortByKey();
-        joinAndCogroup();
+    /**
+     * 算子
+     */
+    @Test
+    public void some() {
+
     }
 
     /**
