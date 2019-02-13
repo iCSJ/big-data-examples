@@ -1,4 +1,4 @@
-package com.andy.spark.core;
+package com.andy.spark.core.examples;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;

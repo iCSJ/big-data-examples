@@ -6,6 +6,7 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
+import org.junit.Test;
 import scala.Tuple2;
 
 import java.util.Arrays;
@@ -13,12 +14,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p> action 操作
+ * <p> Action （行动）算子 12 个
  *
  * @author leone
  * @since 2018-12-19
  **/
-public class ActionOperation {
+public class JavaActionOperation {
 
 
     public static void main(String[] args) {
@@ -26,17 +27,15 @@ public class ActionOperation {
 //        count();
 //        take();
 //        countByKey();
-        saveAsTextFile();
+//        saveAsTextFile();
     }
 
-    /**
-     * public static void reduce() {
-     * JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("action").setMaster("local"));
-     * sparkContext.close();
-     * }
-     */
 
-    public static void reduce() {
+    /**
+     * reduce 算子
+     */
+    @Test
+    public void reduce() {
         JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("action").setMaster("local"));
         List<Integer> numberList = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
         JavaRDD<Integer> numbers = sparkContext.parallelize(numberList);
@@ -46,6 +45,7 @@ public class ActionOperation {
     }
 
 
+    @Test
     public static void collect() {
         JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("action").setMaster("local"));
         List<Integer> numberList = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -56,12 +56,10 @@ public class ActionOperation {
         for (Integer num : collect) {
             System.out.println(num);
         }
-
-
         sparkContext.close();
     }
 
-
+    @Test
     public static void count() {
         JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("action").setMaster("local"));
         List<Integer> numberList = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -73,6 +71,7 @@ public class ActionOperation {
         sparkContext.close();
     }
 
+    @Test
     public static void take() {
         JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("action").setMaster("local"));
         List<Integer> numberList = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -86,6 +85,7 @@ public class ActionOperation {
     /**
      * saveAsTextFile 算子
      */
+    @Test
     public static void saveAsTextFile() {
         JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("action").setMaster("local"));
         List<Integer> numberList = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
@@ -98,6 +98,7 @@ public class ActionOperation {
     /**
      * countByKey 算子
      */
+    @Test
     public static void countByKey() {
         JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("action").setMaster("local"));
         List<Tuple2<String, String>> scoresList = Arrays.asList(

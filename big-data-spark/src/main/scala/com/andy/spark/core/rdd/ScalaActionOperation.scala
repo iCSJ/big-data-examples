@@ -1,4 +1,4 @@
-package com.andy.spark.core.rdds
+package com.andy.spark.core.rdd
 
 import org.apache.spark.{SparkConf, SparkContext}
 
@@ -8,7 +8,7 @@ import org.apache.spark.{SparkConf, SparkContext}
   * @author leone
   * @since 2018-12-19
   **/
-object ActionOperation {
+object ScalaActionOperation {
 
   def main(args: Array[String]): Unit = {
     //    reduce()

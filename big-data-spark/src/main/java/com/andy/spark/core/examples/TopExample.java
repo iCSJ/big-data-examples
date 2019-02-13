@@ -1,4 +1,4 @@
-package com.andy.spark.core;
+package com.andy.spark.core.examples;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -10,7 +10,7 @@ import org.apache.spark.api.java.JavaSparkContext;
  * @author leone
  * @since 2018-12-20
  **/
-public class TopDemo {
+public class TopExample {
 
     public static void main(String[] args) {
 

@@ -1,4 +1,4 @@
-package com.andy.spark.core.ip
+package com.andy.spark.core.examples.ip
 
 import org.apache.spark.{SparkConf, SparkContext}
 

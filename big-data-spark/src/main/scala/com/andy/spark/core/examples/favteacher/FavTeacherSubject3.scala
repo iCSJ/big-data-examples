@@ -1,9 +1,9 @@
-package com.andy.spark.core.favteacher
+package com.andy.spark.core.examples.favteacher
 
 import java.net.URL
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.{Partitioner, SparkConf, SparkContext}
 
 /**
   * <p> 统计最受欢迎的老师
@@ -11,7 +11,7 @@ import org.apache.spark.{SparkConf, SparkContext}
   * @author leone
   * @since 2018-12-08
   **/
-object FavTeacher {
+object FavTeacherSubject3 {
 
   def main(args: Array[String]): Unit = {
 
@@ -21,20 +21,29 @@ object FavTeacher {
 
     val lines: RDD[String] = sc.textFile(args(0))
 
-    val teacherAndOne = lines.map(line => {
+    val subjectAndTeacher: RDD[((String, String), Int)] = lines.map(line => {
       val index = line.lastIndexOf("/")
       val teacher = line.substring(index + 1)
       val httpHost = line.substring(0, index)
       val subject = new URL(httpHost).getHost.split("[.]")(0)
-      (teacher, 1)
+      ((subject, teacher), 1)
     })
-    val reduced: RDD[(String, Int)] = teacherAndOne.reduceByKey(_ + _)
 
-    val sorted: RDD[(String, Int)] = reduced.sortBy(_._2, false)
-    val result = sorted.collect()
-    println(result.toBuffer)
+    val reduced: RDD[((String, String), Int)] = subjectAndTeacher.reduceByKey(_ + _)
+
+    //    reduced.partitionBy()/
+
     sc.stop()
   }
 
+
+}
+
+
+class SubjectParitioner extends Partitioner {
+
+  override def numPartitions: Int = ???
+
+  override def getPartition(key: Any): Int = ???
 
 }

@@ -1,4 +1,4 @@
-package com.andy.spark.core.rdds
+package com.andy.spark.core.examples
 
 import org.apache.spark.{SparkConf, SparkContext}
 

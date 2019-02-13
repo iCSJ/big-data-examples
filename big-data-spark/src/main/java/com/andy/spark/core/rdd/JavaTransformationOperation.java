@@ -14,12 +14,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * <p>
+ * <p> Transformation （转换/变换）算子
  *
  * @author leone
  * @since 2018-12-18
  **/
-public class TransformationOperation {
+public class JavaTransformationOperation {
 
     public static void main(String[] args) {
 //        map();

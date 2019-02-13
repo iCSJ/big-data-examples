@@ -1,4 +1,4 @@
-package com.andy.spark.core.favteacher
+package com.andy.spark.core.examples.favteacher
 
 import java.net.URL
 
@@ -11,7 +11,7 @@ import org.apache.spark.{SparkConf, SparkContext}
   * @author leone
   * @since 2018-12-08
   **/
-object FavTeacherSubject {
+object FavTeacher {
 
   def main(args: Array[String]): Unit = {
 
@@ -21,26 +21,18 @@ object FavTeacherSubject {
 
     val lines: RDD[String] = sc.textFile(args(0))
 
-    val subjectAndTeacher: RDD[((String, String), Int)] = lines.map(line => {
+    val teacherAndOne = lines.map(line => {
       val index = line.lastIndexOf("/")
       val teacher = line.substring(index + 1)
       val httpHost = line.substring(0, index)
       val subject = new URL(httpHost).getHost.split("[.]")(0)
-      ((subject, teacher), 1)
+      (teacher, 1)
     })
+    val reduced: RDD[(String, Int)] = teacherAndOne.reduceByKey(_ + _)
 
-    //    val map: RDD[((String, String), Int)] = subjectAndTeacher.map((_, 1))
-
-    val reduced: RDD[((String, String), Int)] = subjectAndTeacher.reduceByKey(_ + _)
-
-    val grouped: RDD[(String, Iterable[((String, String), Int)])] = reduced.groupBy(_._1._1)
-
-    val sorted = grouped.mapValues(_.toList.sortBy(_._2).reverse.take(3))
-
-    val result: Array[(String, List[((String, String), Int)])] = sorted.collect()
-
+    val sorted: RDD[(String, Int)] = reduced.sortBy(_._2, false)
+    val result = sorted.collect()
     println(result.toBuffer)
-
     sc.stop()
   }
 

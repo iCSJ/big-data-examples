@@ -1,10 +1,10 @@
-package com.andy.spark.core
+package com.andy.spark.core.wc
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
-  * <p>
+  * <p> scala world count
   *
   * @author leone
   * @since 2018-12-02
@@ -45,8 +45,6 @@ object ScalaWordCount {
 
     // 释放资源
     sc.stop()
-
-
   }
 
 
