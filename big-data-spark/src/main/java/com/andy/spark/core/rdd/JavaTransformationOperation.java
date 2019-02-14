@@ -4,6 +4,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.Optional;
 import org.apache.spark.api.java.function.*;
 import org.junit.Test;
 import scala.Tuple2;
@@ -148,6 +149,44 @@ public class JavaTransformationOperation {
     }
 
     /**
+     * leftOuterJoin 算子
+     */
+    @Test
+    public void leftOuterJoin() {
+        JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("leftOuterJoin").setMaster("local[*]"));
+        JavaRDD<Integer> rdd1 = sparkContext.parallelize(Arrays.asList(1, 2, 3, 4, 5));
+        JavaRDD<Integer> rdd2 = sparkContext.parallelize(Arrays.asList(1, 9, 3, 7, 5));
+
+        JavaPairRDD<Integer, Integer> firstRDD = rdd1.mapToPair((PairFunction<Integer, Integer, Integer>) integer -> new Tuple2<>(integer, integer * 10));
+
+        JavaPairRDD<Integer, Integer> secondRDD = rdd2.mapToPair((PairFunction<Integer, Integer, Integer>) integer -> new Tuple2<>(integer, integer * 100));
+
+        JavaPairRDD<Integer, Tuple2<Integer, Optional<Integer>>> result = firstRDD.leftOuterJoin(secondRDD);
+
+        result.foreach(e -> System.out.println(e + ""));
+
+        sparkContext.close();
+    }
+
+    /**
+     * rightOuterJoin 算子
+     */
+    @Test
+    public void rightOuterJoin() {
+        JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("leftOuterJoin").setMaster("local[*]"));
+        JavaRDD<Integer> rdd1 = sparkContext.parallelize(Arrays.asList(1, 2, 3, 4, 5));
+        JavaRDD<Integer> rdd2 = sparkContext.parallelize(Arrays.asList(1, 9, 3, 7, 5));
+
+        JavaPairRDD<Integer, Integer> firstRDD = rdd1.mapToPair((PairFunction<Integer, Integer, Integer>) integer -> new Tuple2<>(integer, integer * 10));
+
+        JavaPairRDD<Integer, Integer> secondRDD = rdd2.mapToPair((PairFunction<Integer, Integer, Integer>) integer -> new Tuple2<>(integer, integer * 100));
+        JavaPairRDD<Integer, Tuple2<Optional<Integer>, Integer>> result = firstRDD.rightOuterJoin(secondRDD);
+        result.foreach(e -> System.out.println(e + ""));
+
+        sparkContext.close();
+    }
+
+    /**
      * cartesian 算子 对两个RDD内的所有元素进行笛卡尔积操作。操作后，内部实现返回CartesianRDD；
      */
     @Test
@@ -160,9 +199,95 @@ public class JavaTransformationOperation {
         sparkContext.close();
     }
 
+    /**
+     * cartesian 算子 用于将RDD进行重分区，使用HashPartitioner。且该RDD的分区个数等于numPartitions个数。如果shuffle设置为true，则会进行shuffle
+     */
+    @Test
+    public void coalesce() {
+        JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("coalesce").setMaster("local[*]"));
+        List<Integer> data = Arrays.asList(1, 2, 4, 3, 5, 6, 7, 8, 9, 10);
+        JavaRDD<Integer> javaRDD = sparkContext.parallelize(data, 5);
+        System.out.println(javaRDD.getNumPartitions());
+        JavaRDD<Integer> coalesce = javaRDD.coalesce(2, true);
+        System.out.println(coalesce.collect());
+        System.out.println(coalesce.getNumPartitions());
+        sparkContext.close();
+    }
+
 
     /**
-     * filter 算子 是对元素进行过滤，对每个 元 素 应 用 f 函 数， 返 回 值 为 true 的 元 素 在RDD 中保留，返回值为 false 的元素将被过滤掉
+     * repartition 算子 repartition是coalesce接口中shuffle为true的简易实现，即Reshuffle RDD并随机分区，使各分区数据量尽可能平衡。若分区之后分区数远大于原分区数，则需要shuffle。
+     */
+    @Test
+    public void repartition() {
+        JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("repartition").setMaster("local[*]"));
+        List<Integer> data = Arrays.asList(1, 2, 4, 3, 5, 6, 7, 8, 9, 10);
+        JavaRDD<Integer> javaRDD = sparkContext.parallelize(data, 5);
+        System.out.println(javaRDD.getNumPartitions());
+        JavaRDD<Integer> coalesce = javaRDD.repartition(3);
+        System.out.println(coalesce.collect());
+        System.out.println(coalesce.getNumPartitions());
+        sparkContext.close();
+    }
+
+
+    /**
+     * mapPartitionsWithIndex 算子 类似于mapPartitions，但func带有一个整数参数表示分片的索引值，因此在类型为T的RDD上运行时，func的函数类型必须是(Int, Iterator[T]) => Iterator[U])
+     */
+    @Test
+    public void mapPartitionsWithIndex() {
+        JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("mapPartitionsWithIndex").setMaster("local[*]"));
+        List<Integer> data = Arrays.asList(1, 2, 4, 3, 5, 6, 7, 8, 9, 10);
+        JavaRDD<Integer> javaRDD = sparkContext.parallelize(data, 2);
+        JavaRDD<Integer> coalesce = javaRDD.mapPartitionsWithIndex((Function2<Integer, Iterator<Integer>, Iterator<Integer>>) (integer, integerIterator) -> {
+            int isum = 0;
+            while (integerIterator.hasNext()) {
+                isum += integerIterator.next();
+            }
+            LinkedList<Integer> linkedList = new LinkedList<>();
+            linkedList.add(isum);
+            return linkedList.iterator();
+        }, true);
+
+        System.out.println(coalesce.collect());
+        sparkContext.close();
+    }
+
+    /**
+     * cogroup
+     */
+    @Test
+    public void cogroup() {
+        JavaSparkContext sparkContext = new JavaSparkContext(new SparkConf().setAppName("cogroup").setMaster("local[*]"));
+
+        List<Tuple2<Integer, String>> studentList = Arrays.asList(
+                new Tuple2<>(1, "tom"),
+                new Tuple2<>(2, "jack"),
+                new Tuple2<>(3, "james"),
+                new Tuple2<>(4, "andy")
+        );
+
+        List<Tuple2<Integer, Integer>> scoreList = Arrays.asList(
+                new Tuple2<>(1, 100),
+                new Tuple2<>(2, 90),
+                new Tuple2<>(3, 89),
+                new Tuple2<>(3, 100),
+                new Tuple2<>(2, 100),
+                new Tuple2<>(4, 97)
+        );
+
+        JavaPairRDD<Integer, String> rdd1 = sparkContext.parallelizePairs(studentList);
+
+        JavaPairRDD<Integer, Integer> rdd2 = sparkContext.parallelizePairs(scoreList);
+
+        JavaPairRDD<Integer, Tuple2<Iterable<String>, Iterable<Integer>>> result = rdd1.cogroup(rdd2);
+        System.out.println(result.collect());
+
+        sparkContext.close();
+    }
+
+    /**
+     * filter 算子 是对元素进行过滤，对每个元素应用f函数，返回值为true的元素在RDD中保留，返回值为 false 的元素将被过滤掉
      */
     @Test
     public void filter() {
@@ -291,11 +416,12 @@ public class JavaTransformationOperation {
     /**
      * pipe 算子 通过一个shell命令来对RDD各分区进行“管道化”。通过pipe变换将一些shell命令用于Spark中生成的新RDD
      */
+    @Test
     public void pipe() {
         JavaSparkContext sc = new JavaSparkContext(new SparkConf().setAppName("pipe").setMaster("local[*]"));
         List<String> data = Arrays.asList("hi", "hello", "how", "are", "you");
         sc.parallelize(data)
-                .pipe("/Users/andy/echo.sh")
+                .pipe("e:\\b.bat")
                 .collect()
                 .forEach(System.out::println);
         sc.close();
