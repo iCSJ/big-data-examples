@@ -11,7 +11,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 object ScalaTransformationOperation {
 
   def main(args: Array[String]): Unit = {
-    reduceByKey();
+    combineByKey();
   }
 
   /**
@@ -146,6 +146,21 @@ object ScalaTransformationOperation {
     val result = studentPair.join(scorePair)
 
     result.foreach(println)
+    sc.stop()
+  }
+
+  /**
+    * combineByKey 算子
+    */
+  def combineByKey(): Unit = {
+    val conf = new SparkConf().setAppName("combineByKey").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val rdd = sc.parallelize(Array(1, 2, 3, 4, 6, 7, 8))
+    val rdd1 = rdd.map((_, 1))
+    val rdd2 = rdd1.combineByKey(x => x, (a: Int, b: Int) => a + b, (m: Int, n: Int) => m + n)
+    rdd2.foreach(e => println(e))
+
     sc.stop()
   }
 
