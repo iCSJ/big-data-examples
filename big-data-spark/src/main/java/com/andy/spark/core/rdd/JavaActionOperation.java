@@ -24,7 +24,7 @@ public class JavaActionOperation {
     private static List<Integer> numberList = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
 
     /**
-     * reduce 算子，通过func函数聚集RDD中的所有元素，这个功能必须是课交换且可并联的
+     * reduce 算子，通过func函数聚集RDD中的所有元素，这个功能必须是可交换且可并联的
      */
     @Test
     public void reduce() {

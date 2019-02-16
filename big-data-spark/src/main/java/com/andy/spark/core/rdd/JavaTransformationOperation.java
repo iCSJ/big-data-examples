@@ -85,7 +85,7 @@ public class JavaTransformationOperation {
     }
 
     /**
-     * glom函数将每个分区形成一个数组，内部实现是返回的GlommedRDD
+     * glom 函数将每个分区形成一个数组，内部实现是返回的GlommedRDD
      */
     @Test
     public void glom() {
@@ -428,7 +428,7 @@ public class JavaTransformationOperation {
     }
 
     /**
-     * join join 算子：排序
+     * join 算子：排序
      */
     @Test
     public void join2() {
