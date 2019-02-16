@@ -390,9 +390,6 @@ object ScalaTransformationOperation {
     val sc = new SparkContext(conf)
 
     val rdd1 = sc.parallelize(numbers, 2)
-    val result = rdd1.aggregate()
-
-
     sc.stop()
   }
 

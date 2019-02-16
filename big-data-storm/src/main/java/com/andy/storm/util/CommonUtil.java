@@ -60,7 +60,7 @@ public class CommonUtil {
     }
 
     public static void main(String[] args) {
-        String hello = CommonUtil.info(new String("james"), "hello");
+        String hello = CommonUtil.info("james", "hello");
         System.out.println(hello);
 
     }
@@ -81,9 +81,6 @@ public class CommonUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
-
 
 }

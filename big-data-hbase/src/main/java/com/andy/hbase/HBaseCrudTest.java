@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -26,7 +25,9 @@ public class HBaseCrudTest {
 
     private String tableName = "t_person";
 
-    private String f1 = "f1", f2 = "f2", f3 = "f3";
+    private String f1 = "f1";
+
+    private String f3 = "f3";
 
     private Connection conn;
 
@@ -53,7 +54,7 @@ public class HBaseCrudTest {
         Table table = conn.getTable(TableName.valueOf(tableName));
         List<Put> rows = new ArrayList<>();
 
-        /**
+        /*
          * 0 代表前面补充0
          * 4 代表长度为4
          * d 代表参数为正数型
@@ -62,6 +63,7 @@ public class HBaseCrudTest {
             Put row = new Put(Bytes.toBytes(String.format("%04d", i)));
             row.addColumn(Bytes.toBytes(f1), Bytes.toBytes("name"), Bytes.toBytes(RandomValue.getName()));
             row.addColumn(Bytes.toBytes(f1), Bytes.toBytes("age"), Bytes.toBytes(String.valueOf(RandomValue.getNumber(50))));
+            String f2 = "f2";
             row.addColumn(Bytes.toBytes(f2), Bytes.toBytes("address"), Bytes.toBytes(RandomValue.getAddress()));
             rows.add(row);
         }
@@ -178,9 +180,7 @@ public class HBaseCrudTest {
 
         ResultScanner result = table.getScanner(scan);
 
-        Iterator<Result> iterator = result.iterator();
-        while (iterator.hasNext()) {
-            Result rs = iterator.next();
+        for (Result rs : result) {
             CellScanner cellScanner = rs.cellScanner();
             while (cellScanner.advance()) {
                 Cell cell = cellScanner.current();
