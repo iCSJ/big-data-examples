@@ -10,8 +10,7 @@ import org.apache.spark.{SparkConf, SparkContext}
   **/
 object ScalaTransformationOperation {
 
-  val numbers = Array(1, 2, 3, 4, 5, 7, 9)
-
+  val numbers = Array(1, 2, 3, 4, 5, 7, 9, 9)
 
 
   /**
@@ -187,7 +186,7 @@ object ScalaTransformationOperation {
     * glom 算子 将每个分区形成一个数组
     */
   def glom(): Unit = {
-    val conf = new SparkConf().setAppName("mapPartitions").setMaster("local[*]")
+    val conf = new SparkConf().setAppName("glom").setMaster("local[*]")
     val sc = new SparkContext(conf)
 
     val rdd = sc.parallelize(numbers, 2)
@@ -204,7 +203,7 @@ object ScalaTransformationOperation {
     * union 算子 对源RDD和参数RDD求并集后返回一个新的RDD
     */
   def union(): Unit = {
-    val conf = new SparkConf().setAppName("mapPartitions").setMaster("local[*]")
+    val conf = new SparkConf().setAppName("union").setMaster("local[*]")
     val sc = new SparkContext(conf)
 
     val rdd1 = sc.parallelize(numbers, 2)
@@ -218,12 +217,204 @@ object ScalaTransformationOperation {
   }
 
 
+  /**
+    * intersection 算子 对源RDD和参数RDD求交集后返回一个新的RDD
+    */
+  def intersection(): Unit = {
+    val conf = new SparkConf().setAppName("intersection").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val rdd1 = sc.parallelize(numbers, 2)
+    val rdd2 = sc.parallelize(1 to 10, 2)
+
+    val result = rdd1.intersection(rdd2)
+
+    result.foreach(println)
+
+    sc.stop()
+  }
+
+
+  /**
+    * leftOuterJoin 算子 根据两个RDD来进行做外连接，右边没有的值会返回一个None。右边有值的话会返回一个Some。
+    */
+  def leftOuterJoin(): Unit = {
+    val conf = new SparkConf().setAppName("leftOuterJoin").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val rdd1 = sc.parallelize(numbers, 2).map((_, 1))
+    val rdd2 = sc.parallelize(1 to 10, 2).map((_, 2))
+
+    val result = rdd1.leftOuterJoin(rdd2)
+
+    result.foreach(println)
+
+    sc.stop()
+  }
+
+  /**
+    * rightOuterJoin 算子 对两个RDD来做一个右外链接。返回的Value类型为option类型。左边有值的话为Some，没有的话为None。
+    */
+  def rightOuterJoin(): Unit = {
+    val conf = new SparkConf().setAppName("rightOuterJoin").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val rdd1 = sc.parallelize(numbers, 2).map((_, 1))
+    val rdd2 = sc.parallelize(1 to 10, 2).map((_, 2))
+
+    val result = rdd1.rightOuterJoin(rdd2)
+
+    result.foreach(println)
+
+    sc.stop()
+  }
+
+  /**
+    * cartesian 算子 对两个RDD内的所有元素进行笛卡尔积操作。操作后，内部实现返回CartesianRDD；
+    */
+  def cartesian(): Unit = {
+    val conf = new SparkConf().setAppName("cartesian").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val rdd1 = sc.parallelize(numbers, 2)
+    val rdd2 = sc.parallelize(1 to 10, 2)
+
+    val result = rdd1.cartesian(rdd2)
+
+    result.foreach(println)
+
+    sc.stop()
+  }
+
+  /**
+    * coalesce 算子 用于将RDD进行重分区，使用HashPartitioner。且该RDD的分区个数等于numPartitions个数。如果shuffle设置为true，则会进行shuffle
+    */
+  def coalesce(): Unit = {
+    val conf = new SparkConf().setAppName("coalesce").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val rdd1 = sc.parallelize(numbers, 2)
+
+    val result = rdd1.coalesce(3, true)
+    println(result.getNumPartitions)
+
+    result.foreach(println)
+
+    sc.stop()
+  }
+
+  /**
+    * repartition 算子 repartition是coalesce接口中shuffle为true的简易实现，即Reshuffle RDD并随机分区，使各分区数据量尽可能平衡。若分区之后分区数远大于原分区数，则需要shuffle。
+    */
+  def repartition(): Unit = {
+    val conf = new SparkConf().setAppName("repartition").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val rdd1 = sc.parallelize(numbers, 2)
+
+    val result = rdd1.repartition(5)
+
+    println("分区数: " + result.getNumPartitions)
+
+    result.foreach(println)
+
+    sc.stop()
+  }
+
+  /**
+    * mapPartitionsWithIndex 算子 类似于mapPartitions，但func带有一个整数参数表示分片的索引值，因此在类型为T的RDD上运行时，func的函数类型必须是(Int, Iterator[T]) => Iterator[U])
+    */
+  def mapPartitionsWithIndex(): Unit = {
+    val conf = new SparkConf().setAppName("mapPartitionsWithIndex").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val rdd1 = sc.parallelize(numbers, 2)
+
+    sc.stop()
+  }
+
+  /**
+    * cogroup 算子:对两个RDD中的KV元素，每个RDD中相同key中的元素分别聚合成一个集合。与reduceByKey不同的是针对两个RDD中相同的key的元素进行合并。
+    */
+  def cogroup(): Unit = {
+    val conf = new SparkConf().setAppName("cogroup").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val nameArray = Array(Tuple2(1, "Spark"), Tuple2(2, "Hadoop"), Tuple2(3, "Flume"), Tuple2(4, "Hive"))
+
+    val typeArray = Array(Tuple2(1, "james"), Tuple2(2, "andy"), Tuple2(3, "jack"), Tuple2(4, "jerry"), Tuple2(5, "tom"),
+      Tuple2(1, "34"), Tuple2(1, "45"), Tuple2(2, "47"), Tuple2(3, "75"), Tuple2(4, "95"), Tuple2(5, "16"), Tuple2(1, "85"))
+
+    val names = sc.parallelize(nameArray)
+    val types = sc.parallelize(typeArray)
+
+    val nameAndType = names.cogroup(types)
+
+    nameAndType.foreach(println)
+
+    sc.stop()
+  }
+
+  /**
+    * sample 算子 根据fraction指定的比例对数据进行采样，可以选择是否使用随机数进行替换，seed用于指定随机数生成器种子
+    */
+  def sample(): Unit = {
+    val conf = new SparkConf().setAppName("sample").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val rdd1 = sc.parallelize(numbers, 2)
+    val result = rdd1.sample(true, 0.5)
+
+    result.foreach(println)
+    sc.stop()
+  }
+
+  /**
+    * distinct 算子 对源RDD进行去重后返回一个新的RDD
+    */
+  def distinct(): Unit = {
+    val conf = new SparkConf().setAppName("distinct").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val rdd1 = sc.parallelize(numbers, 2)
+    val result = rdd1.distinct()
+    result.foreach(println)
+    sc.stop()
+  }
+
+  /**
+    * aggregateByKey 算子 对源RDD进行去重后返回一个新的RDD
+    */
+  def aggregateByKey(): Unit = {
+    val conf = new SparkConf().setAppName("aggregateByKey").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val rdd1 = sc.parallelize(numbers, 2)
+    val result = rdd1.aggregate()
+
+
+    sc.stop()
+  }
+
+  /**
+    * pipe 算子 通过一个shell命令来对RDD各分区进行“管道化”。通过pipe变换将一些shell命令用于Spark中生成的新RDD
+    */
+  def pipe(): Unit = {
+    val conf = new SparkConf().setAppName("aggregateByKey").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val rdd1 = sc.parallelize(numbers, 2)
+
+    val scriptPath = "/home/spark/bin/echo.sh"
+    val pipeRDD = rdd1.pipe(scriptPath)
+    print(pipeRDD.collect())
+    sc.stop()
+  }
 
 
   def main(args: Array[String]): Unit = {
-    union()
+    distinct()
   }
-
 
 
 }

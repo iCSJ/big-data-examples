@@ -149,7 +149,7 @@ public class JavaTransformationOperation {
     }
 
     /**
-     * leftOuterJoin 算子
+     * leftOuterJoin 算子 根据两个RDD来进行做外连接，右边没有的值会返回一个None。右边有值的话会返回一个Some。
      */
     @Test
     public void leftOuterJoin() {
@@ -200,7 +200,7 @@ public class JavaTransformationOperation {
     }
 
     /**
-     * cartesian 算子 用于将RDD进行重分区，使用HashPartitioner。且该RDD的分区个数等于numPartitions个数。如果shuffle设置为true，则会进行shuffle
+     * coalesce 算子 用于将RDD进行重分区，使用HashPartitioner。且该RDD的分区个数等于numPartitions个数。如果shuffle设置为true，则会进行shuffle
      */
     @Test
     public void coalesce() {
@@ -254,7 +254,7 @@ public class JavaTransformationOperation {
     }
 
     /**
-     * cogroup
+     * cogroup 算子:对两个RDD中的KV元素，每个RDD中相同key中的元素分别聚合成一个集合。与reduceByKey不同的是针对两个RDD中相同的key的元素进行合并。
      */
     @Test
     public void cogroup() {
