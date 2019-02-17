@@ -36,7 +36,8 @@ public class HdfsClientTest {
      */
     @Test
     public void putTest() throws IOException {
-        fs.copyFromLocalFile(new Path("file:///D:/tmp/hadoop/input/hello.txt"), new Path("hdfs://node-1:9000/data/hello.txt"));
+        fs.copyFromLocalFile(new Path("file:///D:/tmp/hadoop/input1/words.txt"),
+                new Path("hdfs://node-1:9000/hadoop-2.7.7/input1/words.txt"));
     }
 
 
@@ -48,7 +49,7 @@ public class HdfsClientTest {
      */
     @Test
     public void download() throws Exception, IOException {
-        fs.copyToLocalFile(new Path("/data/input/hello.txt"), new Path("file:///E:/hadoop/hello.txt"));
+        fs.copyToLocalFile(new Path("/hadoop-2.7.7/input1/words.txt"), new Path("file:///E:/hadoop/words.txt"));
     }
 
 
@@ -60,7 +61,7 @@ public class HdfsClientTest {
      */
     @Test
     public void mkdirTest() throws IllegalArgumentException, IOException {
-        fs.mkdirs(new Path("/data/input/"));
+        fs.mkdirs(new Path("/test/input/"));
     }
 
     /**
@@ -68,7 +69,7 @@ public class HdfsClientTest {
      */
     @Test
     public void deleteTest() throws IOException {
-        fs.delete(new Path("/data"), true);
+        fs.delete(new Path("/test"), true);
     }
 
 
@@ -80,7 +81,7 @@ public class HdfsClientTest {
      */
     @Test
     public void mvFileTest() throws IllegalArgumentException, IOException {
-        fs.rename(new Path("/data/input/hello.txt"), new Path("/data/output/hello.txt"));
+        fs.rename(new Path("/hadoop-2.7.7/input1/words.txt"), new Path("/hadoop-2.7.7/input3/words.txt"));
     }
 
 

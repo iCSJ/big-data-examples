@@ -404,7 +404,28 @@ object ScalaTransformationOperation {
 
     val scriptPath = "/home/spark/bin/echo.sh"
     val pipeRDD = rdd1.pipe(scriptPath)
+
     print(pipeRDD.collect())
+    sc.stop()
+  }
+
+  /**
+    * 缓存算子
+    */
+  def cache(): Unit = {
+    val conf = new SparkConf().setAppName("cache").setMaster("local[*]")
+    val sc = new SparkContext(conf)
+
+    val rdd1 = sc.parallelize(numbers)
+
+    // 将此rdd的缓存到内存中 只有遇到action算子才会缓存
+    val rdd2 = rdd1.cache()
+
+    rdd2.count()
+
+    // 当执行此方法，持久化的数据就会被删除:
+    rdd1.unpersist(true)
+
     sc.stop()
   }
 
