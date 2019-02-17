@@ -1,0 +1,7 @@
+hello world james hello james jack
+tom hello world andy leone 
+study hadoop java spark scala hadoop
+Initializing JVM Metrics with processName
+bytes to disk to satisfy reduce memory limit
+bytes to disk to satisfy reduce memory limit
+hallo hello world hello world hello world

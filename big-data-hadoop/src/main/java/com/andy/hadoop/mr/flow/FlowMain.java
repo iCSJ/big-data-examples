@@ -28,8 +28,6 @@ public class FlowMain {
             String lies = value.toString();
             String[] fields = lies.split("\t");
             System.out.println(Arrays.toString(fields));
-            System.out.println(fields.length);
-            System.out.println((fields.length - 3) + "----" + (fields.length - 2));
             try {
                 String phone = fields[0];
                 long upFlow = Long.parseLong(fields[fields.length - 3]);
@@ -61,10 +59,10 @@ public class FlowMain {
     public static void main(String[] args) throws Exception {
 
         Configuration conf = new Configuration();
-        // 本地运行配置
-        conf.set("mapreduce.app-submission.cross-platform", "true");
-        conf.set("mapred.job.tracker", "local");
-        conf.set("fs.default.name", "file:///");
+        // 本地运行配置，默认为本地运行配置
+//        conf.set("mapreduce.app-submission.cross-platform", "true");
+//        conf.set("mapred.job.tracker", "local");
+//        conf.set("fs.default.name", "file:///");
 
         // 提交到集群配置 设置job运行的文件系统和资源调度系统
 //        conf.set("fs.defaultFS", "hdfs://node-1:9000");

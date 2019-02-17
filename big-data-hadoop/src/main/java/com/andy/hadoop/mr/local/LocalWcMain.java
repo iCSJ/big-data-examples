@@ -17,9 +17,9 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
  **/
 public class LocalWcMain {
 
-    private static String inputPath = "E:\\tmp\\hadoop\\input\\a.txt";
+    private static String inputPath = "E:\\tmp\\hadoop\\input1";
 
-    private static String outputPath = "E:\\tmp\\hadoop\\output";
+    private static String outputPath = "E:\\tmp\\hadoop\\output2";
 
     public static void main(String[] args) throws Exception {
 
@@ -39,8 +39,8 @@ public class LocalWcMain {
 //        CombineTextInputFormat.setMaxInputSplitSize(job, 4194304);
 //        CombineTextInputFormat.setMinInputSplitSize(job, 2097152);
 
-        job.setMapperClass(WcLocalMapper.class);
-        job.setReducerClass(WcLocalReducer.class);
+        job.setMapperClass(LocalWcMapper.class);
+        job.setReducerClass(LocalWcReducer.class);
 
 
         job.setMapOutputKeyClass(Text.class);

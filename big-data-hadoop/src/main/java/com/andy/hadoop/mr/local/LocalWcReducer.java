@@ -14,7 +14,7 @@ import java.util.Iterator;
  * @author leone
  * @since 2018-11-21
  **/
-public class WcLocalReducer extends Reducer<Text, IntWritable, Text, LongWritable> {
+public class LocalWcReducer extends Reducer<Text, IntWritable, Text, LongWritable> {
 
     @Override
     protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {

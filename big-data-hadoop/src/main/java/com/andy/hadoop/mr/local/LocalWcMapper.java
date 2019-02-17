@@ -13,7 +13,7 @@ import java.io.IOException;
  * @author leone
  * @since 2018-11-21
  **/
-public class WcLocalMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
+public class LocalWcMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 
     @Override
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
