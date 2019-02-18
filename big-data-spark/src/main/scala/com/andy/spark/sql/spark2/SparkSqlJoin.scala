@@ -31,15 +31,13 @@ object SparkSqlJoin {
     // 表二
     val nations: Dataset[String] = spark.createDataset(List("china,中国", "usa,美国"))
 
-    val ndataset = nations.map(l => {
+
+    val df2 = nations.map(l => {
       val fields = l.split(",")
       val ename = fields(0)
       val cname = fields(1)
       (ename, cname)
-    })
-
-    val df2 = ndataset.toDF("ename", "cname")
-
+    }).toDF("ename", "cname")
 
     // 表一表二关联
 

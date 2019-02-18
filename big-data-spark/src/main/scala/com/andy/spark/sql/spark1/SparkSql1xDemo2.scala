@@ -33,14 +33,14 @@ object SparkSql1xDemo2 {
       Row(id, name, age, fv)
     })
 
-    val schemal = StructType(List(
+    val schema = StructType(List(
       StructField("id", LongType, true),
       StructField("name", StringType, true),
       StructField("age", IntegerType, true),
       StructField("fv", DoubleType, true)
     ))
 
-    val df = sqlContext.createDataFrame(rowRDD, schemal)
+    val df = sqlContext.createDataFrame(rowRDD, schema)
     df.registerTempTable("t_person")
     val frame: DataFrame = sqlContext.sql("select * from t_person order by fv desc, age asc")
     frame.show()

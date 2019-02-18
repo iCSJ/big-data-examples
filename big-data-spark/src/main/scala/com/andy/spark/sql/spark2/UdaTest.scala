@@ -19,7 +19,6 @@ object UdaTest {
 
 
     spark.stop()
-
   }
 
 }

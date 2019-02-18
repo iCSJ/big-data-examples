@@ -41,7 +41,6 @@ object SparkSql2xDemo1 {
     val df = dataFrame.where($"fv" > 100).orderBy($"fv" desc, $"age" asc)
     df.show()
 
-
     session.stop()
   }
 

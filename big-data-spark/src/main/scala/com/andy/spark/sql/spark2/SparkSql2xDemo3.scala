@@ -20,7 +20,7 @@ object SparkSql2xDemo3 {
 
     val words: Dataset[String] = lines.flatMap(_.split(" "))
 
-    //    val frame: DataFrame = words.groupBy($"value" as "word").count().sort($"count" desc)
+    // val frame: DataFrame = words.groupBy($"value" as "word").count().sort($"count" desc)
     // 导入聚合函数
     import org.apache.spark.sql.functions._
     val frame: DataFrame = words.groupBy($"value" as "word").agg(count("*") as "counts").orderBy($"counts").orderBy($"counts" desc)

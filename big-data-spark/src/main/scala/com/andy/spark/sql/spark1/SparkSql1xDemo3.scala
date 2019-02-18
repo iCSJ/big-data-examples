@@ -32,7 +32,7 @@ object SparkSql1xDemo3 {
       Row(id, name, age, fv)
     })
 
-    val schemal = StructType(List(
+    val schema = StructType(List(
       StructField("id", LongType, true),
       StructField("name", StringType, true),
       StructField("age", IntegerType, true),
@@ -41,12 +41,12 @@ object SparkSql1xDemo3 {
 
     import sqlContext.implicits._
 
-    val df = sqlContext.createDataFrame(rowRDD, schemal)
+    val df = sqlContext.createDataFrame(rowRDD, schema)
 
     val df1 = df.select("name", "age", "fv")
     val df2 = df1.orderBy($"fv" desc, $"age" asc)
-    df2.show()
 
+    df2.show()
 
     sc.stop()
   }

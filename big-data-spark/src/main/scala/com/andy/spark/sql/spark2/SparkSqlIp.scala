@@ -18,8 +18,8 @@ object SparkSqlIp {
 
     import spark.implicits._
 
-    // 表一
-    val ruleDataFrame = lines.map(line => {
+    // 把数据和约束信息绑定到一起
+    val df = lines.map(line => {
       val fields = line.split("[|]")
       val startNum = fields(2).toLong
       val endNum = fields(3)
@@ -27,6 +27,7 @@ object SparkSqlIp {
       (startNum, endNum, province)
     }).toDF("snum", "enum", "province")
 
+    df.show()
 
     spark.stop()
   }

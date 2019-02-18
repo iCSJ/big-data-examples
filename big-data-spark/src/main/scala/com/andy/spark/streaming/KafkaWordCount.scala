@@ -33,14 +33,13 @@ object KafkaWordCount {
 
 
     val counts = words.map((_, 1L)).reduceByKey(_ + _)
-    //    val counts = words.map((_, 1L)).updateStateByKey(updateFunc, new HashPartitioner(ssc.sparkContext.defaultParallelism))
+    // val counts = words.map((_, 1L)).updateStateByKey(updateFunc, new HashPartitioner(ssc.sparkContext.defaultParallelism))
 
     counts.print()
 
     // 启动spark程序
     ssc.start()
     ssc.awaitTermination()
-
   }
 
 }

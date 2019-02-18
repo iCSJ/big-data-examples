@@ -21,7 +21,6 @@ object SparkSql2xDemo2 {
     val words: Dataset[String] = lines.flatMap(_.split(" "))
 
     // 注册表
-
     val view = words.createTempView("v_wc")
 
     val resuslt = spark.sql("select value, count(*) as counts from v_wc group by value order by counts desc")

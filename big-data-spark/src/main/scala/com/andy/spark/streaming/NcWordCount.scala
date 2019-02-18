@@ -1,7 +1,7 @@
 package com.andy.spark.streaming
 
 import org.apache.spark.streaming.dstream.{DStream, ReceiverInputDStream}
-import org.apache.spark.streaming.{Milliseconds, StreamingContext}
+import org.apache.spark.streaming.{Seconds, StreamingContext}
 import org.apache.spark.{SparkConf, SparkContext}
 
 /**
@@ -15,10 +15,10 @@ object NcWordCount {
   def main(args: Array[String]): Unit = {
 
     // 创建sparkContext
-    val sc = new SparkContext(new SparkConf().setAppName("steaming").setMaster("local[2]"))
+    val sc = new SparkContext(new SparkConf().setAppName("nc-wc-steaming").setMaster("local[2]"))
 
     // 设置批次产生的时间间隔
-    val ssc = new StreamingContext(sc, Milliseconds(5000))
+    val ssc = new StreamingContext(sc, Seconds(5000))
 
     // 从一个socket端口读取数据
     val lines: ReceiverInputDStream[String] = ssc.socketTextStream("node-1", 8888)
@@ -33,9 +33,7 @@ object NcWordCount {
     // 打印结果
     reduced.print()
 
-
     // 启动spark程序
-
     ssc.start()
     ssc.awaitTermination()
   }
