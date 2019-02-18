@@ -38,7 +38,6 @@ object NcWordCount {
 
     ssc.start()
     ssc.awaitTermination()
-
   }
 
 }

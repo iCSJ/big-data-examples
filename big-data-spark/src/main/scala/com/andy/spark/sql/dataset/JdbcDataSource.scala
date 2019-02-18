@@ -1,6 +1,6 @@
 package com.andy.spark.sql.dataset
 
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{DataFrame, Dataset, Row, SparkSession}
 
 /**
   * <p>
@@ -11,34 +11,37 @@ import org.apache.spark.sql.{DataFrame, SparkSession}
 object JdbcDataSource {
 
   def main(args: Array[String]): Unit = {
-    val sprak = SparkSession.builder().appName("jdbcDataSource").master("local[*]").getOrCreate()
 
-    val logs: DataFrame = sprak.read.format("jdbc").options(
-      Map("url" -> "jdbc:mysql://localhost:3306/spark",
+    val spark = SparkSession.builder().appName("jdbcDataSource").master("local[*]").getOrCreate()
+
+    val dbTable: DataFrame = spark.read.format("jdbc").options(
+      Map("url" -> "jdbc:mysql://localhost:3306/db01?useSSL=false",
         "driver" -> "com.mysql.jdbc.Driver",
         "user" -> "root",
-        "dbtable" -> "t_logs",
+        "dbtable" -> "t_user",
         "password" -> "root")
     ).load()
 
-    logs.printSchema()
-    logs.show()
+    // 表字段
+    dbTable.printSchema()
+
+    // 数据信息
+    dbTable.show()
 
 
     // 使用函数式编程过滤
-    //    val filter: Dataset[Row] = logs.filter(e => {
-    //      e.getAs[Int](2) <= 23
-    //    })
-    //    filter.show()
+    /*val filter: Dataset[Row] = dbTable.filter(e => {
+      e.getAs[Int](2) <= 6
+    })
+    filter.show()*/
 
 
     // 使用lambda的方式
-    //    val r = logs.filter($"age" <= 23)
-    //    r.show()
-
-    //    val result: DataFrame = logs.select($"id",$"name",$"age" * 10 as "age")
-    //    val result: DataFrame = logs.select($"name")
-    //    result.show()
+//        val r = dbTable.filter($"age" <= 23)
+//        r.show()
+//        val result: DataFrame = dbTable.select($"id",$"name",$"age" * 10 as "age")
+//        val result: DataFrame = dbTable.select($"name")
+//        result.show()
 
     // 写回数据库
     //    val props = new Properties()
@@ -61,11 +64,10 @@ object JdbcDataSource {
     //    val pdf: DataFrame = csv.toDF("id", "name", "age")
     //    csv.show()
 
-    val parquet: DataFrame = sprak.read.parquet("E:\\tmp\\spark\\parquet")
-    parquet.show()
+    //    val parquet: DataFrame = spark.read.parquet("E:\\tmp\\spark\\parquet")
+    //    parquet.show()
 
-
-    sprak.close()
+    spark.close()
   }
 
 }
