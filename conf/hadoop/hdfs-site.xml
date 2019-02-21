@@ -20,11 +20,11 @@
 
     <property>
         <name>dfs.namenode.name.dir</name>
-        <value>/export/data/hadoop/data/name</value>
+        <value>/export/data/hadoop/name</value>
     </property>
     <property>
         <name>dfs.datanode.data.dir</name>
-        <value>/export/data/hadoop/data/data</value>
+        <value>/export/data/hadoop/data</value>
     </property>
 
     <property>

@@ -13,7 +13,6 @@
   limitations under the License. See accompanying LICENSE file.
 -->
 <configuration>
-
 <!-- Site specific YARN configuration properties -->
 
     <property>
