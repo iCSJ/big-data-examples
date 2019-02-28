@@ -29,7 +29,7 @@ object DataFrameTest {
     val frame = session.createDataFrame(rdd2)
     frame.printSchema()
     frame.show()
-    val customer = frame.createTempView("customer")
+    frame.createTempView("customer")
 
     val sql = session.sql("select * from customer where age > 20 order by age desc")
     sql.show()
