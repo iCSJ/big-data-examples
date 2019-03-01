@@ -1,6 +1,8 @@
 package com.andy.flink.wc
 
 import org.apache.flink.api.java.ExecutionEnvironment
+import org.apache.flink.core.fs.FileSystem.WriteMode
+
 /**
   * <p>
   *
@@ -9,21 +11,29 @@ import org.apache.flink.api.java.ExecutionEnvironment
   **/
 object FlinkWordCount {
 
-    def main(args: Array[String]): Unit = {
-      // 设置运行环境
-      val env = ExecutionEnvironment.getExecutionEnvironment
-
-      // 创造测试数据
-      val words = env.fromElements(
-        "To be, or not to be,--that is the question:--",
-        "Whether 'tis nobler in the mind to suffer",
-        "The slings and arrows of outrageous fortune",
-        "Or to take arms against a sea of troubles,")
+  def main(args: Array[String]): Unit = {
+   /* if (args.length != 2) {
+      println(s"${this.getClass.getSimpleName} must be two param:inputDir outputDir")
+      System.exit(1)
     }
 
+    // 在window环境下，以hadoop身份远程放完HDFS
+    System.setProperty("HADOOP_USER_NAME", "hadoop")
+    val Array(inputDir, outputDir) = args
 
+    val env = ExecutionEnvironment.getExecutionEnvironment
 
+    val text = env.readTextFile(inputDir)
 
+    val result = text.flatMap(_.split("\\s"))
+      .map((_, 1))
+      .groupBy(0)
+      .sum(1)
+
+    result.setParallelism(2).writeAsCsv(outputDir, "\n", ",", WriteMode.OVERWRITE)
+    env.execute(this.getClass.getSimpleName)*/
+
+  }
 
 
 }
