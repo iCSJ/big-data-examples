@@ -9,6 +9,7 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.source.SourceFunction;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.util.Collector;
 
@@ -18,7 +19,7 @@ import org.apache.flink.util.Collector;
  * @author leone
  * @since 2019-02-28
  **/
-public class FlinkJavaWordCount {
+public class FlinkJavaWc {
 
     /**
      * 从本地文件读取字符串，按空格分割单词，统计每个分词出现的次数并输出
@@ -37,10 +38,8 @@ public class FlinkJavaWordCount {
             host = "node-1";
         }
 
-
         // get env
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-
         DataStreamSource<String> text = env.socketTextStream(host, port, "\n");
 
         SingleOutputStreamOperator<WordWithCount> words = text.flatMap((FlatMapFunction<String, WordWithCount>) (s, collector) -> {
