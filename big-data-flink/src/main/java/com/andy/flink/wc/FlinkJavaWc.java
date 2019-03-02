@@ -9,9 +9,9 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.source.SourceFunction;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.util.Collector;
+import org.junit.Test;
 
 /**
  * <p>
@@ -25,27 +25,30 @@ public class FlinkJavaWc {
      * 从本地文件读取字符串，按空格分割单词，统计每个分词出现的次数并输出
      */
     public static void main(String[] args) throws Exception {
+        // 获取输入参数
         int port;
         String host;
-
         try {
             ParameterTool params = ParameterTool.fromArgs(args);
             port = params.getInt("port");
             host = params.get("host");
         } catch (Exception e) {
-            System.err.println("not param port or host used default node-1:9999");
-            port = 9999;
-            host = "node-1";
+            System.err.println("not param port or host used default node-1:8081");
+            port = 8081;
+            host = "39.108.125.41";
         }
 
         // get env
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         DataStreamSource<String> text = env.socketTextStream(host, port, "\n");
 
-        SingleOutputStreamOperator<WordWithCount> words = text.flatMap((FlatMapFunction<String, WordWithCount>) (s, collector) -> {
-            String[] words1 = s.split("\\s");
-            for (String str : words1) {
-                collector.collect(new WordWithCount(str, 1));
+        SingleOutputStreamOperator<WordWithCount> wc = text.flatMap(new FlatMapFunction<String, WordWithCount>() {
+            @Override
+            public void flatMap(String s, Collector<WordWithCount> collector) throws Exception {
+                String[] words = s.split("\\s");
+                for (String str : words) {
+                    collector.collect(new WordWithCount(str, 1));
+                }
             }
         }).keyBy("words")
                 // 指定时间窗口大小
@@ -53,27 +56,7 @@ public class FlinkJavaWc {
                 //.sum("words")
                 .reduce((ReduceFunction<WordWithCount>) (t0, t1) -> new WordWithCount(t0.words, t1.count + t0.count));
         // 打印到控制台并设置并行度
-        words.print().setParallelism(2);
-
-//        DataStream<Tuple2<String, Long>> dataStream = env
-//                // 使用 socket 作为 source
-//                .socketTextStream(host, port, "\n")
-//                // flatMap DataStream->DataStream 将读入的一份数据，转换成0到n个。这里就是拆分。
-//                .flatMap((FlatMapFunction<String, String>) (s, collector) -> {
-//                    String[] words = s.split(" ");
-//                    for (String word : words) {
-//                        collector.collect(word);
-//                    }
-//                })
-//                // map  DataStream->DataStream 读入一份，转换成一份，这里是组装成tuple对
-//                .map((MapFunction<String, Tuple2<String, Long>>) s -> new Tuple2<>(s, 1L))
-//                // keyBy DataStream->KeyedStream 逻辑上将数据根据key进行分区，保证相同的key分到一起。默认是hash分区
-//                .keyBy(0)
-//                // window
-//                .timeWindow(Time.seconds(2))
-//                // sum WindowedStream->DataStream 聚合窗口内容。另外还有min,max等
-//                .sum(1);
-//        dataStream.print();
+        wc.print().setParallelism(2);
         env.execute("word-count");
     }
 
@@ -116,6 +99,23 @@ public class FlinkJavaWc {
         }
     }
 
-
+    @Test
+    public void javaWordCount() throws Exception {
+        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        DataStream<String> text = env.socketTextStream("ip", 8081);
+        DataStream<Tuple2<String, Integer>> dataStream = text.flatMap(new FlatMapFunction<String, Tuple2<String, Integer>>() {
+            @Override
+            public void flatMap(String s, Collector<Tuple2<String, Integer>> collector) throws Exception {
+                String[] tokens = s.toLowerCase().split(" ");
+                for (String token : tokens) {
+                    if (token.length() > 0) {
+                        collector.collect(new Tuple2<>(token, 1));
+                    }
+                }
+            }
+        }).keyBy(0).timeWindow(Time.seconds(2), Time.seconds(1)).sum(1);
+        dataStream.print();
+        env.execute("Java WordCount from SocketTextStream Example");
+    }
 
 }
