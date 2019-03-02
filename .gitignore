@@ -31,4 +31,4 @@ Thumbs.db
 
 # else
 .springBeans
-
+metastore_db/
