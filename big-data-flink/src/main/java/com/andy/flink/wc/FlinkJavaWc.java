@@ -35,7 +35,7 @@ public class FlinkJavaWc {
         } catch (Exception e) {
             System.err.println("not param port or host used default node-1:8081");
             port = 8081;
-            host = "39.108.125.41";
+            host = "node-1";
         }
 
         // get env
@@ -102,7 +102,7 @@ public class FlinkJavaWc {
     @Test
     public void javaWordCount() throws Exception {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        DataStream<String> text = env.socketTextStream("ip", 8081);
+        DataStream<String> text = env.socketTextStream("node-1", 8082);
         DataStream<Tuple2<String, Integer>> dataStream = text.flatMap(new FlatMapFunction<String, Tuple2<String, Integer>>() {
             @Override
             public void flatMap(String s, Collector<Tuple2<String, Integer>> collector) throws Exception {

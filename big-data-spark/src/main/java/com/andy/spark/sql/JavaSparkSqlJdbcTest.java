@@ -16,7 +16,6 @@ import java.util.Properties;
 public class JavaSparkSqlJdbcTest {
 
     public static void main(String[] args) {
-
         // 创建 sparkSql 上下文
         SparkSession spark = SparkSession.builder()
                 .appName("javaSql").config("spark.master", "local[*]").getOrCreate();
@@ -41,7 +40,5 @@ public class JavaSparkSqlJdbcTest {
         df.write().jdbc("jdbc:mysql://localhost:3306/spark?useSSL=false", "t_logs_1", prop);
 
         spark.close();
-
     }
-
 }

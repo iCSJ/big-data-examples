@@ -45,8 +45,6 @@ public class JavaSparkSqlJsonTest {
         df.write().mode(SaveMode.Append).json("file:///E:/tmp/spark/a.json");
 //        df.write().json("file:///E:/tmp/spark/output5");
 
-
-
     }
 
 }

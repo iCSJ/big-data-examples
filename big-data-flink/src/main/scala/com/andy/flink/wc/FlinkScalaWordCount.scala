@@ -31,5 +31,4 @@ object FlinkScalaWordCount {
 
   case class WordWithCount(word: String, count: Long)
 
-
 }

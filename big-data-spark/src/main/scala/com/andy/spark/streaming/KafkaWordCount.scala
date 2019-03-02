@@ -1,9 +1,10 @@
 package com.andy.spark.streaming
 
+import org.apache.kafka.clients.consumer.ConsumerConfig
+import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.SparkConf
-import org.apache.spark.streaming.dstream.DStream
-import org.apache.spark.streaming.kafka.KafkaUtils
-import org.apache.spark.streaming.{Milliseconds, StreamingContext}
+import org.apache.spark.streaming.kafka010.{ConsumerStrategies, KafkaUtils, LocationStrategies}
+import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
   * <p>
@@ -15,31 +16,42 @@ object KafkaWordCount {
 
   def main(args: Array[String]): Unit = {
 
-    // 设置批次产生的时间间隔
-    val ssc = new StreamingContext(new SparkConf().setAppName("kafka-steaming").setMaster("local[2]"), Milliseconds(5000))
+    // offset保存路径
+    val checkpointPath = "file:///e:/tmp/spark/streaming/checkpoint/kafka-direct"
 
-    val topic = Map[String, Int]("order" -> 1)
-    val groupId = "group-1"
-    val zkList = "node-2:2181,node-3:2181,node-4:2181"
+    val conf = new SparkConf().setAppName("ScalaKafkaStream").setMaster("local[2]")
 
-    // 创建DStream
-    val data: DStream[String] = KafkaUtils.createStream(ssc, zkList, groupId, topic).map(_._2)
+    val ssc = new StreamingContext(conf, Seconds(3))
 
-    val words = data.flatMap(_.split(" "))
+    ssc.checkpoint(checkpointPath)
 
-    val updateFunc = (iter: Iterator[(String, Seq[Int], Option[Int])]) => {
-      iter.map(t => (t._1, t._2.sum + t._3.getOrElse(0)))
-    }
+    val bootstrapServers = "node-2:9092,node-3:9092,node-4:9092"
+    val groupId = "streaming-group"
+    val topicName = "streaming-topic"
+    val maxPoll = 20000
 
+    val kafkaParams = Map(
+      ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG -> bootstrapServers,
+      ConsumerConfig.GROUP_ID_CONFIG -> groupId,
+      ConsumerConfig.MAX_POLL_RECORDS_CONFIG -> maxPoll.toString,
+      ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG -> classOf[StringDeserializer],
+      ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG -> classOf[StringDeserializer]
+    )
 
-    val counts = words.map((_, 1L)).reduceByKey(_ + _)
-    // val counts = words.map((_, 1L)).updateStateByKey(updateFunc, new HashPartitioner(ssc.sparkContext.defaultParallelism))
+    val DStream = KafkaUtils.createDirectStream(ssc, LocationStrategies.PreferConsistent,
+      ConsumerStrategies.Subscribe[String, String](Set(topicName), kafkaParams))
 
-    counts.print()
+    DStream.map(_.value)
+      .flatMap(_.split(" "))
+      .map(x => (x, 1L))
+      .reduceByKey(_ + _)
+      .transform(data => {
+        data.sortBy(_._2, false)
+      }).print()
 
-    // 启动spark程序
     ssc.start()
     ssc.awaitTermination()
+
   }
 
 }
