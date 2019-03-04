@@ -102,7 +102,7 @@ public class FlinkJavaWc {
     @Test
     public void javaWordCount() throws Exception {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-        DataStream<String> text = env.socketTextStream("node-1", 8082);
+        DataStream<String> text = env.socketTextStream("node-1", 8888);
         DataStream<Tuple2<String, Integer>> dataStream = text.flatMap(new FlatMapFunction<String, Tuple2<String, Integer>>() {
             @Override
             public void flatMap(String s, Collector<Tuple2<String, Integer>> collector) throws Exception {
@@ -113,7 +113,7 @@ public class FlinkJavaWc {
                     }
                 }
             }
-        }).keyBy(0).timeWindow(Time.seconds(2), Time.seconds(1)).sum(1);
+        }).keyBy(0).timeWindow(Time.seconds(2), Time.seconds(1)).sum(1).setParallelism(1);
         dataStream.print();
         env.execute("Java WordCount from SocketTextStream Example");
     }

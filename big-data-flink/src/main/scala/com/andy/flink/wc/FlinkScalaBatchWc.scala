@@ -11,9 +11,10 @@ import org.apache.flink.api.scala.ExecutionEnvironment
 object FlinkScalaBatchWc {
 
   def main(args: Array[String]): Unit = {
+    // get env
     val env = ExecutionEnvironment.getExecutionEnvironment
 
-    val text = env.readTextFile("e:/tmp/flink/input")
+    val text = env.readTextFile("file:///e:/tmp/flink/input")
 
     import org.apache.flink.api.scala._
 
@@ -22,10 +23,11 @@ object FlinkScalaBatchWc {
       .map((_, 1)))
       .groupBy(0)
       .sum(1)
-    counts.writeAsCsv("e:/tmp/flink/output1", "\n", " ").setParallelism(1)
+      .setParallelism(1)
+
+    counts.writeAsCsv("file:///e:/tmp/flink/output1", "\n", ",").setParallelism(1)
 
     env.execute("scala batch wc")
-
 
   }
 

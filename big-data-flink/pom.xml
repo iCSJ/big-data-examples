@@ -12,7 +12,7 @@
     <artifactId>big-data-flink</artifactId>
 
     <properties>
-        <scala.version>2.11.11</scala.version>
+        <scala.version>2.11.12</scala.version>
         <hadoop.version>2.7.7</hadoop.version>
         <flink.version>1.7.2</flink.version>
     </properties>

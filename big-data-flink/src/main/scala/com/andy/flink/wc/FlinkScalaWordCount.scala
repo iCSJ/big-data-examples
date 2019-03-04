@@ -16,17 +16,20 @@ object FlinkScalaWordCount {
     import org.apache.flink.api.scala._
 
     val env = StreamExecutionEnvironment.getExecutionEnvironment
+
     val text = env.socketTextStream("node-1", 9999, '\n')
+
     val result = text.flatMap(line => line.split("\\s"))
       .map(w => WordWithCount(w, 1))
       .keyBy("word")
       .timeWindowAll(Time.seconds(2), Time.seconds(1))
       .sum("count")
+      .setParallelism(1)
 
     result.print().setParallelism(1)
 
-
     env.execute("scala—nc-wc")
+
   }
 
   case class WordWithCount(word: String, count: Long)

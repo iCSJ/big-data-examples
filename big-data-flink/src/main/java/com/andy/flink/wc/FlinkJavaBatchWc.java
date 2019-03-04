@@ -19,11 +19,11 @@ public class FlinkJavaBatchWc {
 
         ExecutionEnvironment env = ExecutionEnvironment.getExecutionEnvironment();
 
-        DataSource<String> dataSource = env.readTextFile("e:/tmp/flink/input");
+        DataSource<String> dataSource = env.readTextFile("file:///e:/tmp/flink/input");
 
-        DataSet<Tuple2<String, Integer>> sum = dataSource.flatMap(new Tokenizer()).groupBy(0).sum(1);
+        DataSet<Tuple2<String, Integer>> sum = dataSource.flatMap(new Tokenizer()).groupBy(0).sum(1).setParallelism(1);
 
-        sum.writeAsCsv("e://tmp/flink/output", "\n", " ");
+        sum.writeAsCsv("file:///e://tmp/flink/output/result.txt", "\n", ",");
 
         env.execute("batch-wc");
 
@@ -32,7 +32,7 @@ public class FlinkJavaBatchWc {
     public static class Tokenizer implements FlatMapFunction<String, Tuple2<String, Integer>> {
         @Override
         public void flatMap(String s, Collector<Tuple2<String, Integer>> collector) throws Exception {
-            String[] tokens = s.toUpperCase().split("\\W");
+            String[] tokens = s.split(" ");
             for (String token : tokens) {
                 if (token.length() > 0) {
                     collector.collect(new Tuple2<>(token, 1));
