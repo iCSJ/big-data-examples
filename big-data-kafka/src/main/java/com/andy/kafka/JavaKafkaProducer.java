@@ -3,6 +3,7 @@ package com.andy.kafka;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +38,8 @@ public class JavaKafkaProducer {
         properties.put("batch.size", 16384);
         properties.put("linger.ms", 1);
         properties.put("buffer.memory", 33554432);
-        properties.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        properties.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        properties.put("key.serializer", StringSerializer.class.getName());
+        properties.put("value.serializer", StringSerializer.class.getName());
     }
 
     public static void main(String[] args) {
