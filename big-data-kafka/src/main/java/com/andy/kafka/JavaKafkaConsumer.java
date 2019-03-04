@@ -25,38 +25,43 @@ public class JavaKafkaConsumer {
 
     private static Producer<String, String> producer;
 
-    private final static String TOPIC = "TEST-TOPIC";
+    private final static String TOPIC = "kafka-test-topic";
+
+    private static final String ZOOKEEPER_HOST = "node-2:2181,node-3:2181,node-4:2181";
+
+    private static final String KAFKA_BROKER = "node-2:9092,node-3:9092,node-4:9092";
 
     private static Properties properties;
 
     static {
         properties = new Properties();
-        //此处配置的是kafka的端口
-        properties.put("bootstrap.servers", "node-2:9092,node-3:9092,node-3:9094");
-    }
-
-    public static void main(String[] args) {
+        properties.put("bootstrap.servers", KAFKA_BROKER);
         properties.put("group.id", "test");
         properties.put("enable.auto.commit", "true");
         properties.put("auto.commit.interval.ms", "1000");
         properties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         properties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+    }
+
+    public static void main(String[] args) {
 
         final KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
+
         consumer.subscribe(Collections.singletonList(TOPIC), new ConsumerRebalanceListener() {
 
             public void onPartitionsRevoked(Collection<TopicPartition> collection) {
+
             }
 
             public void onPartitionsAssigned(Collection<TopicPartition> collection) {
-                //将偏移设置到最开始
+                // 将偏移设置到最开始
                 consumer.seekToBeginning(collection);
             }
         });
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(100);
             for (ConsumerRecord<String, String> record : records) {
-                logger.info("offset = {}, key = {}, value = {}", record.offset(), record.key(), record.value());
+                logger.info("offset: {}, key: {}, value: {}", record.offset(), record.key(), record.value());
             }
         }
     }
