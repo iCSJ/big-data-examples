@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 <!--
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,35 +19,23 @@
 <configuration>
 
     <property>
-        <name>fs.defaultFS</name>
-        <value>hdfs://node-1:9000</value>
-    </property>
-
-    <property>   
-        <name>hadoop.tmp.dir</name>   
-        <value>/export/data/hadoop/temp</value>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
     </property>
 
     <property>
-        <name>hadoop.proxyuser.root.hosts</name>
-        <value>*</value>
+        <name>yarn.app.mapreduce.am.env</name>
+        <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
     </property>
 
     <property>
-        <name>hadoop.proxyuser.root.groups</name>
-        <value>*</value>
+        <name>mapreduce.map.env</name>
+        <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
     </property>
 
-    <!-- HA 配置指定hdfs的nameservice为ns -->
     <property>
-        <name>fs.defaultFS</name>
-        <value>hdfs://ns</value>
-    </property>
-
-    <!-- HA 配置，指定zookeeper地址 -->
-    <property>
-        <name>ha.zookeeper.quorum</name>
-        <value>node-2:2181,node-3:2181,node-4:2181</value>
+        <name>mapreduce.reduce.env</name>
+        <value>HADOOP_MAPRED_HOME=${HADOOP_HOME}</value>
     </property>
 
 </configuration>
