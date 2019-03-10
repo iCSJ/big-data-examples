@@ -18,40 +18,13 @@
 
 <configuration>
 
-    <property>
-        <name>dfs.namenode.name.dir</name>
-        <value>/export/data/hadoop/name</value>
-    </property>
-
-    <property>
-        <name>dfs.datanode.data.dir</name>
-        <value>/export/data/hadoop/data</value>
-    </property>
-
-    <property>
-        <name>dfs.replication</name>
-        <value>2</value>
-    </property>
-
-    <property>
-        <name>dfs.secondary.http.address</name>
-        <value>node-2:50090</value>
-    </property>
-
-    <property>
-        <name>dfs.http.address</name>
-        <value>0.0.0.0:50070</value>
-    </property>
-
-    <!--ha配置-->
-
-    <!--指定hdfs的nameservice为ns1，需要和core-site.xml中的保持一致 -->
+    <!--指定hdfs的nameservice为ns，需要和core-site.xml中的保持一致 -->
     <property>
         <name>dfs.nameservices</name>
         <value>ns</value>
     </property>
 
-    <!-- ns下面有两个NameNode，分别是nn1，nn2 -->
+    <!-- bi下面有两个NameNode，分别是nn1，nn2 -->
     <property>
         <name>dfs.ha.namenodes.ns</name>
         <value>nn1,nn2</value>
@@ -81,7 +54,7 @@
         <value>node-2:50070</value>
     </property>
 
-    <!-- 2台JournalNode地址，后台跟名字，但后面的名字不能与nameService相同-->
+    <!-- 指定NameNode的edits元数据在JournalNode上的存放位置 -->
     <property>
         <name>dfs.namenode.shared.edits.dir</name>
         <value>qjournal://node-3:8485;node-4:8485/ns</value>
@@ -101,7 +74,7 @@
 
     <!-- 配置失败自动切换实现方式 -->
     <property>
-        <name>dfs.client.failover.proxy.provider.ns1</name>
+        <name>dfs.client.failover.proxy.provider.bi</name>
         <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
     </property>
 
@@ -114,10 +87,21 @@
         </value>
     </property>
 
+    <!-- 使用sshfence隔离机制时需要ssh免登陆 -->
+    <property>
+        <name>dfs.ha.fencing.ssh.private-key-files</name>
+        <value>/root/.ssh/id_rsa</value>
+    </property>
+
     <!-- 配置sshfence隔离机制超时时间 -->
     <property>
         <name>dfs.ha.fencing.ssh.connect-timeout</name>
         <value>30000</value>
+    </property>
+
+    <property>
+        <name>dfs.ha.namenodes.jn</name>
+        <value>node-3,node-4</value>
     </property>
 
 </configuration>
