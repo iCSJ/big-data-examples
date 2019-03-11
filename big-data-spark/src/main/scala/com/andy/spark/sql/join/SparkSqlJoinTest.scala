@@ -12,16 +12,13 @@ object SparkSqlJoinTest {
 
   def main(args: Array[String]): Unit = {
 
-    val spark = SparkSession.builder().appName("sparkJoin")
-      .master("local[*]")
-      .getOrCreate()
+    val spark = SparkSession.builder().appName("sparkJoin").master("local[*]").getOrCreate()
 
     import spark.implicits._
 
     val df1 = Seq((0, "playing"), (1, "playing"), (2, "playing")).toDF("id", "token")
 
     val df2 = Seq((0, "P"), (1, "W"), (2, "S")).toDF("aid", "aToken")
-
 
     // df1.cache().count()
 

@@ -18,7 +18,7 @@ object NcWordCount {
     val sc = new SparkContext(new SparkConf().setAppName("nc-wc-steaming").setMaster("local[2]"))
 
     // 设置批次产生的时间间隔
-    val ssc = new StreamingContext(sc, Seconds(5000))
+    val ssc = new StreamingContext(sc, Seconds(5))
 
     // 从一个socket端口读取数据
     val lines: ReceiverInputDStream[String] = ssc.socketTextStream("node-1", 8888)
@@ -26,8 +26,10 @@ object NcWordCount {
     // 对DStream进行操作
     val words: DStream[String] = lines.flatMap(_.split(" "))
 
+    // map操作映射为pairRDD
     val wordAndOne: DStream[(String, Int)] = words.map((_, 1))
 
+    // 聚合操作
     val reduced: DStream[(String, Int)] = wordAndOne.reduceByKey(_ + _)
 
     // 打印结果

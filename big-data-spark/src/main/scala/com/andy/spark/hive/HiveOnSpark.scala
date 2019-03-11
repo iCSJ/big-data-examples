@@ -13,9 +13,7 @@ object HiveOnSpark {
   def main(args: Array[String]): Unit = {
 
     // 创建spark如果想软hive运行在spark上需要开启hive对spark的自持enableHiveSupport()
-    val spark = SparkSession.builder()
-      .master("local[4]")
-      .appName("hiveOnSpark")
+    val spark = SparkSession.builder().master("local[4]").appName("hiveOnSpark")
       // 可以兼容hive的语法
       .enableHiveSupport()
       .getOrCreate()
