@@ -121,7 +121,7 @@ public class HiveClientTest {
      */
     @Test
     public void loadDataTest() throws Exception {
-        String filePath = "/root/app.log";
+        String filePath = "/root/data/app.log";
 
         String sql = "load data local inpath '" + filePath + "' overwrite into table t_log";
         boolean flag = statement.execute(sql);

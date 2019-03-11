@@ -112,7 +112,6 @@
     </dependencies>
 
     <build>
-
         <pluginManagement>
             <plugins>
                 <!-- scala 编译插件 -->
@@ -120,6 +119,25 @@
                     <groupId>net.alchim31.maven</groupId>
                     <artifactId>scala-maven-plugin</artifactId>
                     <version>3.2.2</version>
+                    <executions>
+                        <execution>
+                            <id>scala-compile-first</id>
+                            <goals>
+                                <goal>compile</goal>
+                            </goals>
+                            <configuration>
+                                <includes>
+                                    <include>**/*.scala</include>
+                                </includes>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>scala-test-compile</id>
+                            <goals>
+                                <goal>testCompile</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
 
                 <!-- java 编译插件 -->
