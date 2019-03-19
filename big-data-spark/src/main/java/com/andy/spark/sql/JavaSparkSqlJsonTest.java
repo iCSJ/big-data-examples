@@ -24,7 +24,8 @@ public class JavaSparkSqlJsonTest {
         // 创建 sparkSql 上下文
         SparkSession spark = SparkSession.builder()
                 .appName("javaSql")
-                .config("spark.master", "local[*]").getOrCreate();
+                .config("spark.master", "local[*]")
+                .getOrCreate();
 
         Dataset<Row> df = spark.read().json("file:///E:/tmp/spark/data/user.json");
         df.show(3);
@@ -38,8 +39,8 @@ public class JavaSparkSqlJsonTest {
 
         JavaRDD<Row> javaRDD = df.toJavaRDD();
 
-        // dataFrame 和 RDD转换
-//        javaRDD.foreach(e -> System.out.println(e.getLong(0) + "\t" + e.getLong(1) + "\t" + e.getString(2)));
+        // dataFrame 和 RDD 转换
+        // javaRDD.foreach(e -> System.out.println(e.getLong(0) + "\t" + e.getLong(1) + "\t" + e.getString(2)));
 
 
         df.write().mode(SaveMode.Append).json("file:///E:/tmp/spark/a.json");
