@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 public class BloomFilterTest {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(HBaseCrudTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(BloomFilterTest.class);
 
 
     @Test
