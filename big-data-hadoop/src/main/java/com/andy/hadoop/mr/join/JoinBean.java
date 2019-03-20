@@ -14,41 +14,78 @@ import java.io.IOException;
  **/
 public class JoinBean implements Writable {
 
-    private int orderId;
+    // 订单id
+    private Long orderId;
 
+    // 商品id
+    private Long productId;
+
+    // 创建时间
     private String createTime;
 
-    private String productId;
+    // 订单总价
+    private Long totalAmount;
 
-    private int amount;
+    // 商品名称
+    private String productName;
 
-    private String name;
+    // 商品价格
+    private double productPrice;
 
-    private int categoryId;
-
-    private float price;
-
-    /**
-     * 标记为订单还是商品的bean
-     */
+    // 标记为订单还是商品 0: 商品, 1: 订单
     private String flag;
 
-    public void set(int orderId, String createTime, String productId, int amount, String name, int categoryId, float price, String flag) {
+
+    public JoinBean() {
+    }
+
+    public JoinBean(Long orderId, Long productId, String createTime, Long totalAmount, String productName, double productPrice, String flag) {
         this.orderId = orderId;
-        this.createTime = createTime;
         this.productId = productId;
-        this.amount = amount;
-        this.name = name;
-        this.categoryId = categoryId;
-        this.price = price;
+        this.createTime = createTime;
+        this.totalAmount = totalAmount;
+        this.productName = productName;
+        this.productPrice = productPrice;
         this.flag = flag;
     }
 
-    public int getOrderId() {
+    public void set(Long orderId, Long productId, String createTime, Long totalAmount, String productName, double productPrice, String flag) {
+        this.orderId = orderId;
+        this.productId = productId;
+        this.createTime = createTime;
+        this.totalAmount = totalAmount;
+        this.productName = productName;
+        this.productPrice = productPrice;
+        this.flag = flag;
+    }
+
+    @Override
+    public void write(DataOutput output) throws IOException {
+        output.writeLong(orderId);
+        output.writeUTF(createTime);
+        output.writeLong(totalAmount);
+        output.writeLong(productId);
+        output.writeUTF(productName);
+        output.writeDouble(productPrice);
+        output.writeUTF(flag);
+    }
+
+    @Override
+    public void readFields(DataInput input) throws IOException {
+        this.orderId = input.readLong();
+        this.createTime = input.readUTF();
+        this.totalAmount = input.readLong();
+        this.productId = input.readLong();
+        this.productName = input.readUTF();
+        this.productPrice = input.readDouble();
+        this.flag = input.readUTF();
+    }
+
+    public Long getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(int orderId) {
+    public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
 
@@ -60,44 +97,36 @@ public class JoinBean implements Writable {
         this.createTime = createTime;
     }
 
-    public String getProductId() {
+    public Long getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(Long totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(String productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
-    public int getAmount() {
-        return amount;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
-    public String getName() {
-        return name;
+    public double getProductPrice() {
+        return productPrice;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
+    public void setProductPrice(double productPrice) {
+        this.productPrice = productPrice;
     }
 
     public String getFlag() {
@@ -109,40 +138,14 @@ public class JoinBean implements Writable {
     }
 
     @Override
-    public void write(DataOutput output) throws IOException {
-        output.writeInt(orderId);
-        output.writeUTF(createTime);
-        output.writeUTF(productId);
-        output.writeInt(amount);
-        output.writeUTF(name);
-        output.writeInt(categoryId);
-        output.writeFloat(price);
-        output.writeUTF(flag);
-    }
-
-    @Override
-    public void readFields(DataInput input) throws IOException {
-        this.orderId = input.readInt();
-        this.createTime = input.readUTF();
-        this.productId = input.readUTF();
-        this.amount = input.readInt();
-        this.name = input.readUTF();
-        this.categoryId = input.readInt();
-        this.price = input.readFloat();
-        this.flag = input.readUTF();
-    }
-
-    @Override
     public String toString() {
-        return "JoinBean{" +
+        return "{" +
                 "orderId=" + orderId +
                 ", createTime='" + createTime + '\'' +
+                ", totalAmount=" + totalAmount +
                 ", productId=" + productId +
-                ", amount=" + amount +
-                ", name='" + name + '\'' +
-                ", categoryId=" + categoryId +
-                ", price=" + price +
-                ", flag='" + flag + '\'' +
+                ", productName='" + productName + '\'' +
+                ", productPrice=" + productPrice +
                 '}';
     }
 }

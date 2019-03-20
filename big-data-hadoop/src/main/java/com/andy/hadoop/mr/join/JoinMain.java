@@ -30,34 +30,29 @@ public class JoinMain {
      * mapper 业务逻辑
      */
     static class JoinMapper extends Mapper<LongWritable, Text, Text, JoinBean> {
-
         JoinBean joinBean = new JoinBean();
-
         Text k = new Text();
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             FileSplit inputSplit = (FileSplit) context.getInputSplit();
-
             // 得到文件名称
             String name = inputSplit.getPath().getName();
 
-            String productId;
+            Long productId;
+            String[] fields = value.toString().split(",");
 
             // 通过文件名称判断是那种文件
             if (name.startsWith("order")) {
-                String fields[] = value.toString().split(",");
-                // id   date    productId   amount
-                productId = fields[2];
-                joinBean.set(Integer.parseInt(fields[0]), fields[1], productId, Integer.parseInt(fields[3]), "", 0, 0F, "0");
+                // orderId   productId   createTime   totalAmount
+                productId = Long.parseLong(fields[1]);
+                joinBean.set(Long.parseLong(fields[0]), productId, fields[2], Long.parseLong(fields[3]), "", 0D, "0");
             } else {
-                String fields[] = value.toString().split(",");
-                // productId    name    categoryId  price
-                productId = fields[0];
-                joinBean.set(0, "", productId, 0, fields[1], Integer.parseInt(fields[2]), Float.parseFloat(fields[3]), "1");
+                // productId    productName    productPrice
+                productId = Long.parseLong(fields[0]);
+                joinBean.set(0L, productId, "", 0L, fields[1], Double.parseDouble(fields[2]), "1");
             }
-
-            k.set(productId);
+            k.set(String.valueOf(productId));
             context.write(k, joinBean);
         }
     }
@@ -69,8 +64,10 @@ public class JoinMain {
 
         @Override
         protected void reduce(Text key, Iterable<JoinBean> values, Context context) throws IOException, InterruptedException {
+            // reduce 端的productId 是相同的也就是同一个 product 实体
             JoinBean product = new JoinBean();
             ArrayList<JoinBean> orderBeans = new ArrayList<>();
+            // 0: 商品, 1: 订单
             for (JoinBean bean : values) {
                 if ("1".equals(bean.getFlag())) {
                     try {
@@ -90,10 +87,8 @@ public class JoinMain {
             }
 
             for (JoinBean bean : orderBeans) {
-                bean.setName(product.getName());
-                bean.setCategoryId(product.getCategoryId());
-                bean.setPrice(product.getPrice());
-
+                bean.setProductName(product.getProductName());
+                bean.setProductPrice(product.getProductPrice());
                 // 写出
                 context.write(bean, NullWritable.get());
             }
@@ -124,16 +119,14 @@ public class JoinMain {
 
         Path path = new Path(args[1]);
         FileSystem fileSystem = path.getFileSystem(conf);
+
         if (fileSystem.exists(path)) {
             fileSystem.delete(path, true);
         }
+
         FileOutputFormat.setOutputPath(job, path);
-
-
         boolean flag = job.waitForCompletion(true);
-
         System.exit(flag ? 0 : 1);
-
     }
 
 

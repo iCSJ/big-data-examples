@@ -1,11 +1,14 @@
 package com.andy.hbase.bloom;
 
-import com.andy.hbase.HBaseCrudTest;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
+import java.util.UUID;
 
 /**
  * <p>
@@ -15,27 +18,29 @@ import org.slf4j.LoggerFactory;
  **/
 public class BloomFilterTest {
 
-
     private static final Logger logger = LoggerFactory.getLogger(BloomFilterTest.class);
-
 
     @Test
     public void bloomTest1() {
+        // 一百万个数字
         int size = 1000000;
 
-        BloomFilter<Integer> bloomFilter = BloomFilter.create(Funnels.integerFunnel(), size);
+        BloomFilter<String> bloomFilter = BloomFilter.create(Funnels.stringFunnel(StandardCharsets.UTF_8), size);
 
         for (int i = 0; i < size; i++) {
-            bloomFilter.put(i);
+            bloomFilter.put(UUID.randomUUID().toString());
         }
+
         boolean flag = false;
+
         long startTime = System.nanoTime();
-        // 判断这一百万个数中是否包含29999这个数
-        if (bloomFilter.mightContain(29999)) {
+        // 判断这一百万个字符串中是否包含 （hello） 这个字符串
+        if (bloomFilter.mightContain("hello")) {
             flag = true;
         }
+
         long endTime = System.nanoTime();
-        logger.info("result {} time {} 纳秒", flag, (endTime - startTime));
+        logger.info("result: {} time: {} 纳秒", flag, (endTime - startTime));
     }
 
 
@@ -56,7 +61,12 @@ public class BloomFilterTest {
                 errorCount++;
             }
         }
-        logger.info("error count {} 错误率是 {}%", errorCount, ((double) errorCount / 10000) * 100);
+
+        double d = (double) errorCount / 10000;
+        DecimalFormat df = new DecimalFormat("0.00000");
+        df.format(d);
+
+        logger.info("error count {} 错误率是 {}%", errorCount, df.format(d));
     }
 
 

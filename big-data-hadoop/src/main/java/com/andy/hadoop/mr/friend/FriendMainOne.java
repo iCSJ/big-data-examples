@@ -29,9 +29,8 @@ public class FriendMainOne {
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             String[] person_friend = value.toString().split(":");
-            System.out.println(value.toString());
             for (String friend : person_friend[1].split(",")) {
-                // 输出(好友，人)
+                // 输出 (好友,人)
                 context.write(new Text(friend), new Text(person_friend[0]));
             }
         }
@@ -39,7 +38,7 @@ public class FriendMainOne {
 
 
     /**
-     * reducer业务逻辑
+     * reducer 业务逻辑
      */
     static class FriendReducerOne extends Reducer<Text, Text, Text, Text> {
         @Override

@@ -31,21 +31,16 @@ public class FriendMainTwo {
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
             // 得到上一步输处的结果
             String[] person_friend = value.toString().split("\t");
-
             String friend = person_friend[0];
             String[] person = person_friend[1].split(",");
-
             Arrays.sort(person);
-
             for (int i = 0; i < person.length - 2; i++) {
                 for (int j = 0; j < person.length - 1; j++) {
                     context.write(new Text(person[i] + "-" + person[j]), new Text(friend));
                 }
             }
-
         }
     }
-
 
     /**
      * reducer业务逻辑
