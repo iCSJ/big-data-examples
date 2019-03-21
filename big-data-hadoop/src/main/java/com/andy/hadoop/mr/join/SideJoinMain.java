@@ -1,7 +1,5 @@
-package com.andy.hadoop.mr.join.side;
+package com.andy.hadoop.mr.join;
 
-import com.andy.hadoop.mr.join.JoinBean;
-import com.andy.hadoop.mr.join.JoinMain;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
@@ -12,19 +10,19 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * <p>
+ * <p> 在map端join
  *
  * @author leone
  * @since 2019-01-06
@@ -46,11 +44,11 @@ public class SideJoinMain {
         @Override
         protected void setup(Context context) throws IOException {
             // 初始化操作
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("E:/tmp/hadoop/input1/product.log")));
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("e:/tmp/hadoop/input5/product.txt")));
             String line;
             while (StringUtils.isNotEmpty(line = bufferedReader.readLine())) {
                 String[] fields = line.split(",");
-                productMap.put(fields[0], fields[1]);
+                productMap.put(fields[0], fields[1] + "," + fields[2]);
             }
             bufferedReader.close();
         }
@@ -61,18 +59,23 @@ public class SideJoinMain {
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-            String orderLines = value.toString();
-            String[] fields = orderLines.split(",");
+            FileSplit inputSplit = (FileSplit) context.getInputSplit();
+            // 得到文件名称
+            String name = inputSplit.getPath().getName();
 
-            String productName = productMap.get(fields[2]);
-            k.set(orderLines + "," + productName);
-            context.write(k, NullWritable.get());
+            if (name.startsWith("order")) {
+                String orderLines = value.toString();
+                String[] fields = orderLines.split(",");
+                String productName = productMap.get(fields[1]);
+                k.set(orderLines + "," + productName);
+                context.write(k, NullWritable.get());
+            }
+
         }
     }
 
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException, URISyntaxException {
-
         Configuration conf = new Configuration();
         if (args.length < 1) {
             System.err.println("please set process arguments!");
@@ -81,7 +84,7 @@ public class SideJoinMain {
         Job job = Job.getInstance(conf);
 
         // 将商品表缓存到task的工作节点的目录中
-        job.addCacheFile(new URI("file:/E:/tmp/hadoop/input1/product.log"));
+//        job.addCacheFile(new URI("file:/E:/tmp/hadoop/input6/product.log"));
         job.setJarByClass(JoinMain.class);
 
         job.setMapperClass(SideJoinMapper.class);
@@ -105,11 +108,8 @@ public class SideJoinMain {
         }
         FileOutputFormat.setOutputPath(job, path);
 
-
         boolean flag = job.waitForCompletion(true);
-
         System.exit(flag ? 0 : 1);
-
     }
 
 }

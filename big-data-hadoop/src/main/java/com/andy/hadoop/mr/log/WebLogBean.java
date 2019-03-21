@@ -8,17 +8,42 @@ package com.andy.hadoop.mr.log;
  **/
 public class WebLogBean {
 
-    private String remote_addr;// 记录客户端的ip地址
-    private String remote_user;// 记录客户端用户名称,忽略属性"-"
-    private String time_local;// 记录访问时间与时区
-    private String request;// 记录请求的url与http协议
-    private String status;// 记录请求状态；成功是200
-    private String body_bytes_sent;// 记录发送给客户端文件主体内容大小
-    private String http_referer;// 用来记录从那个页面链接访问过来的
-    private String http_user_agent;// 记录客户浏览器的相关信息
+    // 记录客户端的ip地址
+    private String remote_addr;
 
-    private boolean valid = true;// 判断数据是否合法
+    // 记录客户端用户名称,忽略属性"-"
+    private String remote_user;
 
+    // 记录访问时间与时区
+    private String time_local;
+
+    // 记录请求的url与http协议
+    private String request;
+
+    // 记录请求状态；成功是200
+    private String status;
+
+    // 记录发送给客户端文件主体内容大小
+    private String body_bytes_sent;
+
+    // 用来记录从那个页面链接访问过来的
+    private String http_referer;
+
+    // 记录客户浏览器的相关信息
+    private String http_user_agent;
+
+    // 判断数据是否合法
+    private boolean valid = true;
+
+    public void set(String remote_addr, String remote_user, String time_local, String request, String status, String body_bytes_sent, String http_referer) {
+        this.remote_addr = remote_addr;
+        this.remote_user = remote_user;
+        this.time_local = time_local;
+        this.request = request;
+        this.status = status;
+        this.body_bytes_sent = body_bytes_sent;
+        this.http_referer = http_referer;
+    }
 
     public String getRemote_addr() {
         return remote_addr;
@@ -97,14 +122,14 @@ public class WebLogBean {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.valid);
-        sb.append("\001").append(this.remote_addr);
-        sb.append("\001").append(this.remote_user);
-        sb.append("\001").append(this.time_local);
-        sb.append("\001").append(this.request);
-        sb.append("\001").append(this.status);
-        sb.append("\001").append(this.body_bytes_sent);
-        sb.append("\001").append(this.http_referer);
-        sb.append("\001").append(this.http_user_agent);
+        sb.append("\t").append(this.remote_addr);
+        sb.append("\t").append(this.remote_user);
+        sb.append("\t").append(this.time_local);
+        sb.append("\t").append(this.request);
+        sb.append("\t").append(this.status);
+        sb.append("\t").append(this.body_bytes_sent);
+        sb.append("\t").append(this.http_referer);
+        sb.append("\t").append(this.http_user_agent);
         return sb.toString();
     }
 

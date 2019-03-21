@@ -4,7 +4,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.parquet.column.ParquetProperties;
 import org.apache.parquet.example.data.Group;
-import org.apache.parquet.example.data.simple.SimpleGroup;
 import org.apache.parquet.example.data.simple.SimpleGroupFactory;
 import org.apache.parquet.format.converter.ParquetMetadataConverter;
 import org.apache.parquet.hadoop.ParquetFileReader;
@@ -21,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.text.ParseException;
 
 /**
  * <p>
@@ -29,9 +27,13 @@ import java.text.ParseException;
  * @author leone
  * @since 2019-03-20
  **/
-public class ParquetWriterTest {
+public class ParquetSimpleTest {
 
-    private static Logger logger = LoggerFactory.getLogger(ParquetWriterTest.class);
+    private static Logger logger = LoggerFactory.getLogger(ParquetSimpleTest.class);
+
+    private static String inputPath = "e:\\tmp\\input\\parquet\\user.parquet";
+
+    private static String outputPath = "e:\\tmp\\input\\parquet\\user.parquet";
 
     /*
      * 写 Parquet 格式数据需要 schema，读取的话自动识别 schema
@@ -58,16 +60,6 @@ public class ParquetWriterTest {
 
     private static MessageType schema = MessageTypeParser.parseMessageType(schemaStr);
 
-    //import org.apache.parquet.schema.Types;
-    /*MessageType schema = Types.buildMessage()
-            .required(PrimitiveType.PrimitiveTypeName.BINARY).as(OriginalType.UTF8).named("city")
-            .required(PrimitiveType.PrimitiveTypeName.BINARY).as(OriginalType.UTF8).named("ip")
-            .repeatedGroup().required(PrimitiveType.PrimitiveTypeName.INT32).named("ttl1")
-            .required(PrimitiveType.PrimitiveTypeName.BINARY).as(OriginalType.UTF8).named("ttl2")
-            .named("time")
-            .named("Pair");*/
-
-
     /**
      * 获取parquet的约束信息
      *
@@ -76,17 +68,20 @@ public class ParquetWriterTest {
     public static void getSchema() throws Exception {
         Configuration configuration = new Configuration();
         ParquetMetadata readFooter;
-        Path parquetFilePath = new Path("file:///E:/tmp/input/parquet/test.parquet");
+        Path parquetFilePath = new Path(inputPath);
         readFooter = ParquetFileReader.readFooter(configuration, parquetFilePath, ParquetMetadataConverter.NO_FILTER);
         MessageType schema = readFooter.getFileMetaData().getSchema();
         logger.info(schema.toString());
     }
 
-    // 生成parquet文件
-    private static void parquetWriter() throws IOException, ParseException {
-        Path file = new Path("file:///e:\\tmp\\input\\parquet\\test.parquet");
+    /**
+     * 生成parquet文件
+     *
+     * @throws IOException
+     */
+    private static void parquetWriter() throws IOException {
         ExampleParquetWriter.Builder builder = ExampleParquetWriter
-                .builder(file)
+                .builder(new Path(outputPath))
                 .withWriteMode(ParquetFileWriter.Mode.CREATE)
                 .withWriterVersion(ParquetProperties.WriterVersion.PARQUET_1_0)
                 .withCompressionCodec(CompressionCodecName.SNAPPY)
@@ -118,14 +113,14 @@ public class ParquetWriterTest {
      * @throws IOException
      */
     private static void parquetReader() throws IOException {
-        Path file = new Path("file:///e:\\tmp\\input\\parquet\\test.parquet");
-        ParquetReader.Builder<Group> builder = ParquetReader.builder(new GroupReadSupport(), file);
-        ParquetReader<Group> reader = builder.build();
-        SimpleGroup group = (SimpleGroup) reader.read();
-        logger.info("schema:" + group.getType().toString());
-        logger.info("account:" + group.getString("account", 0));
+        GroupReadSupport readSupport = new GroupReadSupport();
+        ParquetReader<Group> reader = new ParquetReader<>(new Path(inputPath), readSupport);
+        Group line;
+        while ((line = reader.read()) != null) {
+            System.out.println(line.toString());
+        }
+        reader.close();
     }
-
 
     public static void main(String[] args) throws Exception {
         getSchema();

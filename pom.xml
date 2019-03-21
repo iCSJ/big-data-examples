@@ -17,10 +17,10 @@
         <module>big-data-spark</module>
         <module>big-data-kafka</module>
         <module>big-data-lucene</module>
-        <module>big-data-hbase</module>
         <module>big-data-redis</module>
         <module>big-data-storm</module>
         <module>big-data-common</module>
+        <module>big-data-hbase</module>
         <module>big-data-flink</module>
     </modules>
 
