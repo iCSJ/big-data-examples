@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-
+import java.text.ParseException;
 
 /**
  * <p>
@@ -33,36 +33,57 @@ public class ParquetWriterTest {
 
     private static Logger logger = LoggerFactory.getLogger(ParquetWriterTest.class);
 
+    /*
+     * 写 Parquet 格式数据需要 schema，读取的话自动识别 schema
+     * 每一个字段有三个属性：重复数、数据类型和字段名，重复数可以是以下三种：
+     *         required(出现1次)
+     *         repeated(出现0次或多次)
+     *         optional(出现0次或1次)
+     * 每一个字段的数据类型可以分成两种：
+     *         group(复杂类型)
+     *         primitive(基本类型)
+     * 数据类型有
+     * INT64, INT32, BOOLEAN, BINARY, FLOAT, DOUBLE, INT96, FIXED_LEN_BYTE_ARRAY
+     */
+
     private static String schemaStr = "message schema {"
-            + "optional int64 log_id;"
-            + "optional binary idc_id;"
-            + "optional int64 house_id;"
-            + "optional int64 src_ip_long;"
-            + "optional int64 dest_ip_long;"
-            + "optional int64 src_port;"
-            + "optional int64 dest_port;"
-            + "optional int32 protocol_type;"
-            + "optional binary url64;"
-            + "optional binary access_time;}";
+            + "optional int64 userId;"
+            + "optional binary account;"
+            + "optional binary password;"
+            + "optional int32 age;"
+            + "optional int32 sex;"
+            + "optional binary description;"
+            + "optional boolean deleted;"
+            + "optional binary createTime;}";
 
     private static MessageType schema = MessageTypeParser.parseMessageType(schemaStr);
 
-    public static void testParseSchema() {
-        logger.info(schema.toString());
-    }
+    //import org.apache.parquet.schema.Types;
+    /*MessageType schema = Types.buildMessage()
+            .required(PrimitiveType.PrimitiveTypeName.BINARY).as(OriginalType.UTF8).named("city")
+            .required(PrimitiveType.PrimitiveTypeName.BINARY).as(OriginalType.UTF8).named("ip")
+            .repeatedGroup().required(PrimitiveType.PrimitiveTypeName.INT32).named("ttl1")
+            .required(PrimitiveType.PrimitiveTypeName.BINARY).as(OriginalType.UTF8).named("ttl2")
+            .named("time")
+            .named("Pair");*/
 
-    public static void testGetSchema() throws Exception {
+
+    /**
+     * 获取parquet的约束信息
+     *
+     * @throws Exception
+     */
+    public static void getSchema() throws Exception {
         Configuration configuration = new Configuration();
-        // windows 下测试入库impala需要这个配置
-        System.setProperty("hadoop.home.dir", "E:\\mvtech\\software\\hadoop-common-2.2.0-bin-master");
-        ParquetMetadata readFooter = null;
-        Path parquetFilePath = new Path("file:///E:/mvtech/work/isms_develop/src/org/meter/parquet/2017-08-02-10_91014_DPI0801201708021031_470000.parq");
+        ParquetMetadata readFooter;
+        Path parquetFilePath = new Path("file:///E:/tmp/input/parquet/test.parquet");
         readFooter = ParquetFileReader.readFooter(configuration, parquetFilePath, ParquetMetadataConverter.NO_FILTER);
         MessageType schema = readFooter.getFileMetaData().getSchema();
         logger.info(schema.toString());
     }
 
-    private static void testParquetWriter() throws IOException {
+    // 生成parquet文件
+    private static void parquetWriter() throws IOException, ParseException {
         Path file = new Path("file:///e:\\tmp\\input\\parquet\\test.parquet");
         ExampleParquetWriter.Builder builder = ExampleParquetWriter
                 .builder(file)
@@ -71,46 +92,43 @@ public class ParquetWriterTest {
                 .withCompressionCodec(CompressionCodecName.SNAPPY)
                 //.withConf(configuration)
                 .withType(schema);
-        /*
-         * file, new GroupWriteSupport(), CompressionCodecName.SNAPPY, 256 *
-         * 1024 * 1024, 1 * 1024 * 1024, 512, true, false,
-         * ParquetProperties.WriterVersion.PARQUET_1_0, conf
-         */
+
         ParquetWriter<Group> writer = builder.build();
         SimpleGroupFactory groupFactory = new SimpleGroupFactory(schema);
-        String[] access_log = {"111111", "22222", "33333", "44444", "55555", "666666", "777777", "888888", "999999", "101010"};
+        String[] userLog = {"1001", "james", "6265548", "18", "1", "good man", "false", "2019-02-06 00:00:00"};
+
         for (int i = 0; i < 1000; i++) {
             writer.write(groupFactory.newGroup()
-                    .append("log_id", Long.parseLong(access_log[0]))
-                    .append("idc_id", access_log[1])
-                    .append("house_id", Long.parseLong(access_log[2]))
-                    .append("src_ip_long", Long.parseLong(access_log[3]))
-                    .append("dest_ip_long", Long.parseLong(access_log[4]))
-                    .append("src_port", Long.parseLong(access_log[5]))
-                    .append("dest_port", Long.parseLong(access_log[6]))
-                    .append("protocol_type", Integer.parseInt(access_log[7]))
-                    .append("url64", access_log[8])
-                    .append("access_time", access_log[9]));
+                    .append("userId", Long.parseLong(userLog[0]))
+                    .append("account", userLog[1] + i)
+                    .append("password", userLog[2])
+                    .append("age", Integer.parseInt(userLog[3]))
+                    .append("sex", Integer.parseInt(userLog[4]))
+                    .append("description", userLog[5])
+                    .append("deleted", Boolean.parseBoolean(userLog[6]))
+                    .append("createTime", userLog[7]));
         }
         writer.close();
     }
 
 
-    private static void testParquetReader() throws IOException {
+    /**
+     * 读取parquet文件
+     *
+     * @throws IOException
+     */
+    private static void parquetReader() throws IOException {
         Path file = new Path("file:///e:\\tmp\\input\\parquet\\test.parquet");
         ParquetReader.Builder<Group> builder = ParquetReader.builder(new GroupReadSupport(), file);
         ParquetReader<Group> reader = builder.build();
         SimpleGroup group = (SimpleGroup) reader.read();
         logger.info("schema:" + group.getType().toString());
-        logger.info("idc_id:" + group.getString(1, 0));
+        logger.info("account:" + group.getString("account", 0));
     }
 
 
     public static void main(String[] args) throws Exception {
-        //testGetSchema();
-        //testParseSchema();
-        testParquetWriter();
-//        testParquetReader();
+        getSchema();
     }
 
 }
