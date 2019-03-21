@@ -17,7 +17,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import java.io.IOException;
 
 /**
- * <p>
+ * <p> 倒排索引
  *
  * @author leone
  * @since 2019-01-06
@@ -30,8 +30,8 @@ public class InvertedIndexMainOne {
 
         @Override
         protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-            String line = value.toString();
-            String[] words = line.split(" ");
+            String[] words = value.toString().split(" ");
+
             FileSplit inputSplit = (FileSplit) context.getInputSplit();
             String name = inputSplit.getPath().getName();
             for (String word : words) {
@@ -39,7 +39,6 @@ public class InvertedIndexMainOne {
                 context.write(text, intWritable);
             }
         }
-
     }
 
 
