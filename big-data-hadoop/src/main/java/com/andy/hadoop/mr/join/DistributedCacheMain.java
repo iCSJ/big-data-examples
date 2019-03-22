@@ -27,15 +27,14 @@ import java.util.Map;
  * @author leone
  * @since 2019-01-06
  **/
-public class SideJoinMain {
-
+public class DistributedCacheMain {
 
     private static Configuration conf = new Configuration();
 
     /**
      * mapper 业务逻辑
      */
-    static class SideJoinMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
+    static class DistributedCacheMapper extends Mapper<LongWritable, Text, Text, NullWritable> {
         Map<String, String> productMap = new HashMap<>();
 
         FileReader in = null;
@@ -54,15 +53,6 @@ public class SideJoinMain {
          */
         @Override
         protected void setup(Context context) throws IOException {
-            // 初始化操作
-            /*BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream("e:/tmp/hadoop/input5/product.txt")));
-            String line;
-            while (StringUtils.isNotEmpty(line = bufferedReader.readLine())) {
-                String[] fields = line.split(",");
-                productMap.put(fields[0], fields[1] + "," + fields[2]);
-            }
-            bufferedReader.close();*/
-
             // 获取 cache file 的本地绝对路径，测试验证用
             Path[] files = context.getLocalCacheFiles();
             for (Path path : files) {
@@ -117,7 +107,7 @@ public class SideJoinMain {
 
         // 不需要reducer
         job.setNumReduceTasks(0);
-        job.setMapperClass(SideJoinMapper.class);
+        job.setMapperClass(DistributedCacheMapper.class);
 
         /**
          * 不同文件类型的添加方法：

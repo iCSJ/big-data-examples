@@ -16,9 +16,9 @@ import java.io.IOException;
 
 public class CustomReader extends RecordReader<NullWritable, BytesWritable> {
 
-    private FileSplit split;
+    private FileSplit fileSplit;
 
-    private Configuration configuration;
+    private Configuration conf;
 
     private BytesWritable value = new BytesWritable();
 
@@ -31,32 +31,24 @@ public class CustomReader extends RecordReader<NullWritable, BytesWritable> {
     @Override
     public void initialize(InputSplit inputSplit, TaskAttemptContext context) throws IOException, InterruptedException {
         // 获取传递过来的数据
-        this.split = (FileSplit) inputSplit;
-        configuration = context.getConfiguration();
+        this.fileSplit = (FileSplit) inputSplit;
+        conf = context.getConfiguration();
     }
 
     @Override
     public boolean nextKeyValue() throws IOException, InterruptedException {
         if (!processed) {
-            // 1 定义缓存
-            byte[] contents = new byte[(int) split.getLength()];
-            // 2 获取文件系统
-            Path path = split.getPath();
-            FileSystem fs = path.getFileSystem(configuration);
-            // 3 读取内容
-            FSDataInputStream fis = null;
-            try {
-                // 3.1 打开输入流
-                fis = fs.open(path);
-                // 3.2 读取文件内容
-                IOUtils.readFully(fis, contents, 0, contents.length);
-                // 3.3 输出文件内容
-                value.set(contents, 0, contents.length);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                IOUtils.closeStream(fis);
-            }
+            // 获取文件系统
+            FileSystem fileSystem = FileSystem.get(conf);
+            // 获取输入流
+            Path path = fileSplit.getPath();
+            FSDataInputStream fis = fileSystem.open(path);
+            // 读取数据，定义缓冲区，缓冲区长度大小设置为文件的大小
+            byte[] buf = new byte[(int) fileSplit.getLength()];
+            IOUtils.readFully(fis, buf, 0, buf.length);
+            // 写入到v
+            value.set(buf, 0, buf.length);
+            // 是否继续读文件，防止重复读
             processed = true;
             return true;
         }
@@ -75,7 +67,7 @@ public class CustomReader extends RecordReader<NullWritable, BytesWritable> {
 
     @Override
     public float getProgress() throws IOException, InterruptedException {
-        return processed ? 1 : 0;
+        return 0;
     }
 
     @Override
