@@ -50,13 +50,13 @@ public class ParquetSimpleTest {
 
     private static String schemaStr = "message schema {"
             + "optional int64 userId;"
-            + "optional binary account;"
-            + "optional binary password;"
+            + "optional binary account (UTF8);"
+            + "optional binary password (UTF8);"
             + "optional int32 age;"
             + "optional int32 sex;"
-            + "optional binary description;"
+            + "optional binary description (UTF8);"
             + "optional boolean deleted;"
-            + "optional binary createTime;}";
+            + "optional binary createTime (UTF8);}";
 
     private static MessageType schema = MessageTypeParser.parseMessageType(schemaStr);
 
@@ -123,7 +123,7 @@ public class ParquetSimpleTest {
     }
 
     public static void main(String[] args) throws Exception {
-        getSchema();
+        parquetWriter();
     }
 
 }
