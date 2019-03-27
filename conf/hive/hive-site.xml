@@ -36,5 +36,6 @@
         <name>javax.jdo.option.ConnectionPassword</name>
         <value>root</value>
     </property>
+
 </configuration>
 

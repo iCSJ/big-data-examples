@@ -73,12 +73,12 @@ public class CallMain {
         FileInputFormat.setInputPaths(job, new Path(args[0]));
 
         Path outputPath = new Path(args[1]);
-
         FileSystem fileSystem = outputPath.getFileSystem(configuration);
         if (fileSystem.exists(outputPath)) {
             fileSystem.delete(outputPath);
         }
         FileOutputFormat.setOutputPath(job, outputPath);
+
         job.waitForCompletion(true);
     }
 
