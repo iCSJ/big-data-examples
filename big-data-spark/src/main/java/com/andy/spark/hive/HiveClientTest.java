@@ -8,13 +8,13 @@ import java.sql.*;
  * @author leone
  * @since 2019-01-13
  **/
-public class SparkHiveClientTest {
+public class HiveClientTest {
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
         Class.forName("org.apache.hive.jdbc.HiveDriver");
         Connection connection = DriverManager.getConnection("jdbc:hive2://node-1:10000/default");
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("select count(*) from t_boy");
+        ResultSet resultSet = statement.executeQuery("select count(*) from t_app_log");
 //        ResultSet resultSet = statement.executeQuery("select * from t_boy order by fv desc");
 
 //        System.out.println("id\tname\tfv");
@@ -25,6 +25,7 @@ public class SparkHiveClientTest {
 //            System.out.println(id + "\t" + name + "\t+" + fv);
             System.out.println(resultSet.getInt(1));
         }
+
         resultSet.close();
     }
 

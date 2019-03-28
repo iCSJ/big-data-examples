@@ -18,7 +18,7 @@
             
     <property>
         <name>javax.jdo.option.ConnectionURL</name>
-        <value>jdbc:mysql://39.108.125.41:3306/spark1?useSSL=false</value>
+        <value>jdbc:mysql://39.108.125.41:3306/hive3?useSSL=false</value>
     </property>
 
     <property>
@@ -33,7 +33,13 @@
             
     <property>
         <name>javax.jdo.option.ConnectionPassword</name>
-        <value>root</value>
+        <value>cloud</value>
+    </property>
+
+    <!-- 配置hive的数据目录 -->
+    <property>
+        <name>hive.metastore.warehouse.dir</name>
+        <value>/hive-3.1.1</value>
     </property>
 
 </configuration>

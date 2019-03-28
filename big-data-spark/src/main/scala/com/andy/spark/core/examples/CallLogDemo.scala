@@ -16,7 +16,7 @@ object CallLogDemo {
 
     val session = SparkSession.builder().appName("call-log").master("local[*]").getOrCreate()
 
-    val rdd = session.sparkContext.textFile("file:///e:/tmp/logs/web-20190218-11.txt")
+    val rdd = session.sparkContext.textFile("e:/tmp/logs/web-20190218-11.txt")
 
     // 1550480943879	34:E4:82:E3:E1:75	15939879106	https://www.centos.org/	PC	182.83.205.68	81	3820
     val rows: RDD[Row] = rdd.map(line => {
@@ -43,7 +43,6 @@ object CallLogDemo {
       StructField("up", LongType, true),
       StructField("done", LongType, true)
     ))
-
 
     val dataFrame: DataFrame = session.createDataFrame(rows, schema)
 
